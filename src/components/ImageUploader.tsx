@@ -80,7 +80,7 @@ export default function ImageUploader({
       formData.append("upload_preset", "mycoat_uploads");
 
       const res = await fetch(
-        `https://api.cloudinary.com/v1_1/kvbhbm8b/image/upload`,
+        `https://api.cloudinary.com/v1_1/gbcdsfq6/image/upload`,
         { method: "POST", body: formData }
       );
 

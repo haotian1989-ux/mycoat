@@ -33,7 +33,7 @@ export default function VideoUploader({ value, onChange, label }: VideoUploaderP
     const xhr = new XMLHttpRequest();
     xhr.open(
       "POST",
-      "https://api.cloudinary.com/v1_1/kvbhbm8b/video/upload"
+      "https://api.cloudinary.com/v1_1/gbcdsfq6/video/upload"
     );
     xhr.upload.onprogress = (ev) => {
       if (ev.lengthComputable) {
