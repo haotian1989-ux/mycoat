@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Prata&family=Manrope:wght@300;400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-paper text-charcoal font-sans antialiased;
+  }
+  ::selection {
+    @apply bg-gold/90 text-paper;
+  }
+  /* 细腻滚动条 */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { @apply bg-charcoal/20; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-gold/70; }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center bg-charcoal text-paper px-10 py-4 
+           text-[11px] tracking-label uppercase font-semibold
+           hover:bg-gold transition-colors duration-400;
+  }
+  .btn-outline {
+    @apply inline-flex items-center justify-center border border-charcoal/25 text-charcoal px-10 py-4 
+           text-[11px] tracking-label uppercase font-semibold
+           hover:border-charcoal hover:bg-charcoal hover:text-paper transition-all duration-400;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center text-[11px] tracking-label uppercase text-smoke
+           hover:text-charcoal transition-colors duration-300;
+  }
+  .section-title {
+    @apply font-serif text-heading;
+  }
+  .section-label {
+    @apply text-[11px] tracking-label uppercase text-gold font-semibold;
+  }
+  .page-padding {
+    @apply px-6 md:px-12 lg:px-20 xl:px-28;
+  }
+  .body-text {
+    @apply text-smoke leading-relaxed;
+  }
+  /* 细线点缀 */
+  .hairline {
+    @apply h-px w-10 bg-gold/70;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+/* Hide alt text while image is loading */
+img {
+  color: transparent;
+}
