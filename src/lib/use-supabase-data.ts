@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "./supabase";
 import { DATA_MODE, LS, lsGet, lsSet } from "./config";
+import { adminFetch } from "./admin-api";
 
 const TABLE_LS_KEY: Record<string, string> = {
   products: LS.products,
@@ -13,6 +14,7 @@ const TABLE_LS_KEY: Record<string, string> = {
   orders: LS.orders,
   reviews: LS.reviews,
   about_page: "mycoat_about",
+  payment_settings: LS.payment,
 };
 
 function lsKeyFor(table: string): string {
@@ -43,36 +45,6 @@ function snakeToCamel(obj: any): any {
   return out;
 }
 
-function toSnakeCase(obj: any): any {
-  const row: any = {};
-  for (const [key, val] of Object.entries(obj)) {
-    const snake = key.replace(/[A-Z]/g, (m) => "_" + m.toLowerCase());
-    row[snake] = val;
-  }
-  return row;
-}
-
-function toProductRow(obj: any): any {
-  return {
-    id: obj.id,
-    name: obj.name,
-    slug: obj.slug,
-    category: obj.category,
-    subcategory: obj.subcategory ?? "",
-    price: obj.price,
-    description: obj.description,
-    details: obj.details,
-    materials: obj.materials,
-    dimensions: obj.dimensions,
-    colors: obj.colors,
-    images: obj.images,
-    video_url: obj.video ?? obj.video_url ?? "",
-    in_stock: obj.inStock ?? obj.in_stock,
-    featured: obj.featured,
-    new_arrival: obj.newArrival ?? obj.new_arrival,
-  };
-}
-
 // ── List hook (products, builder data) ──
 export function useAdminSupabaseList<T extends { id: string }>(table: string, defaults: T[]) {
   const [items, setItems] = useState<T[]>(defaults);
@@ -90,7 +62,7 @@ export function useAdminSupabaseList<T extends { id: string }>(table: string, de
     supabase.from(table).select("*").then(({ data, error }) => {
       if (!error && data && data.length > 0) {
         if (table === "products") {
-          setItems(data.map((row: any) => ({ ...row, inStock: row.in_stock, newArrival: row.new_arrival })) as T[]);
+          setItems(data.map((row: any) => ({ ...row, video: row.video_url ?? "", inStock: row.in_stock, newArrival: row.new_arrival })) as T[]);
         } else {
           setItems(data.map(snakeToCamel) as T[]);
         }
@@ -106,17 +78,7 @@ export function useAdminSupabaseList<T extends { id: string }>(table: string, de
       return null;
     }
     try {
-      await supabase.from(table).delete().not("id", "is", null);
-      if (newItems.length > 0) {
-        const rows = newItems.map((item) => {
-          if (table === "products") {
-            return toProductRow(item);
-          }
-          return toSnakeCase(item);
-        });
-        const { error } = await supabase.from(table).insert(rows);
-        if (error) return error.message;
-      }
+      await adminFetch(table, "save_all", newItems);
       return null;
     } catch (e: any) { return e.message || "保存失败"; }
   }, [table, key]);
@@ -129,9 +91,7 @@ export function useAdminSupabaseList<T extends { id: string }>(table: string, de
       return null;
     }
     try {
-      const row = table === "products" ? toProductRow(item) : toSnakeCase(item);
-      const { error } = await supabase.from(table).insert(row);
-      if (error) return error.message;
+      await adminFetch(table, "add", item);
       return null;
     } catch (e: any) { return e.message || "添加失败"; }
   }, [items, table, key]);
@@ -146,8 +106,7 @@ export function useAdminSupabaseList<T extends { id: string }>(table: string, de
       return null;
     }
     try {
-      const { error } = await supabase.from(table).delete().eq("id", id);
-      if (error) return error.message;
+      await adminFetch(table, "delete", undefined, id);
       setItems((prev) => prev.filter((i) => i.id !== id));
       return null;
     } catch (e: any) { return e.message || "删除失败"; }
@@ -165,13 +124,11 @@ export function useAdminSupabaseList<T extends { id: string }>(table: string, de
     try {
       const existing = items.find((i) => i.id === id);
       const merged = { ...existing, ...updates };
-      const row = table === "products" ? toProductRow(merged) : toSnakeCase(merged);
-      const { error } = await supabase.from(table).update(row).eq("id", id);
-      if (error) return error.message;
+      await adminFetch(table, "update", merged, id);
       setItems((prev) => prev.map((i) => i.id === id ? { ...i, ...updates } : i));
       return null;
     } catch (e: any) { return e.message || "更新失败"; }
-  }, [items, table]);
+  }, [items, table, key]);
 
   return { items, loaded, saveAll, add, remove, update };
 }
@@ -210,10 +167,7 @@ export function useAdminSupabaseSingle<T extends Record<string, any>>(table: str
       return null;
     }
     try {
-      const row = toSnakeCase(v);
-      if (table === "homepage_hero") row.id = true;
-      const { error } = await supabase.from(table).upsert(row);
-      if (error) return error.message;
+      await adminFetch(table, "upsert", v);
       return null;
     } catch (e: any) { return e.message || "发布失败"; }
   }, [table, key]);
@@ -248,18 +202,12 @@ export function useAdminSections(table: string, defaults: any[]) {
       return { error: null, count: newItems.length };
     }
     try {
-      const { error: delErr } = await supabase.from(table).delete().not("id", "is", null);
-      if (delErr) return { error: "删除旧数据失败: " + delErr.message, count: 0 };
-      if (newItems.length > 0) {
-        const rows = newItems.map((item: any, i: number) => ({
-          title: item.title || "", description: item.description || "",
-          image: item.image || "", link: item.link || "", sort_order: i,
-        }));
-        const { error: insErr } = await supabase.from(table).insert(rows);
-        if (insErr) return { error: "写入失败: " + insErr.message, count: 0 };
-      }
-      const { data: verify } = await supabase.from(table).select("*");
-      return { error: null, count: verify?.length || 0 };
+      const rows = newItems.map((item: any, i: number) => ({
+        title: item.title || "", description: item.description || "",
+        image: item.image || "", link: item.link || "", sort_order: i,
+      }));
+      await adminFetch(table, "save_all", rows);
+      return { error: null, count: rows.length };
     } catch (e: any) { return { error: e.message || "未知错误", count: 0 }; }
   }, [table, key]);
 
@@ -312,11 +260,7 @@ export function useAdminContact(defaultLinks: any[]) {
       return null;
     }
     try {
-      await supabase.from("contact_links").delete().not("id", "is", null);
-      if (newLinks.length > 0) {
-        const { error } = await supabase.from("contact_links").insert(newLinks);
-        if (error) return error.message;
-      }
+      await adminFetch("contact_links", "save_all", newLinks);
       return null;
     } catch (e: any) { return e.message || "保存失败"; }
   }, []);

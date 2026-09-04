@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getServiceSupabase } from "@/lib/supabase-server";
+import { getServerSupabase } from "@/lib/supabase-server";
 import { products as defaultProducts } from "@/lib/data";
 import { Product } from "@/lib/types";
 import { DATA_MODE, SITE_URL, SITE_NAME } from "@/lib/config";
@@ -26,6 +26,7 @@ function mapRow(row: any): Product {
     colors: row.colors || [],
     sizes: row.sizes || [],
     images: row.images || [],
+    video: row.video_url || "",
     inStock: row.in_stock,
     featured: row.featured,
     newArrival: row.new_arrival,
@@ -39,7 +40,7 @@ async function fetchProductBySlug(slug: string): Promise<Product | null> {
     return defaultProducts.find((p) => p.slug === slug) || null;
   }
   try {
-    const supabase = getServiceSupabase();
+    const supabase = getServerSupabase();
     const { data, error } = await supabase
       .from("products")
       .select("*")

@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getServiceSupabase } from "@/lib/supabase-server";
+import { getServerSupabase } from "@/lib/supabase-server";
 import { products as defaultProducts } from "@/lib/data";
 import { DATA_MODE, SITE_URL } from "@/lib/config";
 
@@ -15,7 +15,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let slugs: string[] = defaultProducts.map((p) => p.slug);
   if (DATA_MODE === "supabase") {
     try {
-      const supabase = getServiceSupabase();
+      const supabase = getServerSupabase();
       const { data, error } = await supabase.from("products").select("slug");
       if (!error && data && data.length > 0) {
         slugs = data.map((row: any) => row.slug).filter(Boolean);

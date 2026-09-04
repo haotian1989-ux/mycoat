@@ -11,23 +11,27 @@ interface CartState {
 
 type CartAction =
   | { type: "ADD_ITEM"; product: Product; quantity?: number; color?: string; size?: string }
-  | { type: "REMOVE_ITEM"; productId: string }
-  | { type: "UPDATE_QTY"; productId: string; quantity: number }
+  | { type: "REMOVE_ITEM"; key: string }
+  | { type: "UPDATE_QTY"; key: string; quantity: number }
   | { type: "TOGGLE_CART" }
   | { type: "CLOSE_CART" }
   | { type: "CLEAR_CART" };
 
+function itemKey(item: { product: Product; color?: string; size?: string }): string {
+  return `${item.product.id}|${item.color || ""}|${item.size || ""}`;
+}
+
 function cartReducer(state: CartState, action: CartAction): CartState {
   switch (action.type) {
     case "ADD_ITEM": {
-      const key = (i: CartItem) => `${i.product.id}|${i.color || ""}|${i.size || ""}`;
-      const existing = state.items.find((i) => key(i) === key(action as any));
+      const key = itemKey(action);
+      const existing = state.items.find((i) => itemKey(i) === key);
       if (existing) {
         return {
           ...state,
           isOpen: true,
           items: state.items.map((i) =>
-            key(i) === key(action as any)
+            itemKey(i) === key
               ? { ...i, quantity: i.quantity + (action.quantity || 1) }
               : i
           ),
@@ -50,13 +54,14 @@ function cartReducer(state: CartState, action: CartAction): CartState {
     case "REMOVE_ITEM":
       return {
         ...state,
-        items: state.items.filter((i) => i.product.id !== action.productId),
-      };    case "UPDATE_QTY":
+        items: state.items.filter((i) => itemKey(i) !== action.key),
+      };
+    case "UPDATE_QTY":
       return {
         ...state,
         items: state.items
           .map((i) =>
-            i.product.id === action.productId
+            itemKey(i) === action.key
               ? { ...i, quantity: action.quantity }
               : i
           )

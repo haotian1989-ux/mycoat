@@ -93,6 +93,17 @@ CREATE TABLE IF NOT EXISTS about_page (
 );
 INSERT INTO about_page (id) VALUES (true) ON CONFLICT DO NOTHING;
 
+-- 支付设置（PayPal + USDT；前台结算页需公开读取收款信息）
+CREATE TABLE IF NOT EXISTS payment_settings (
+  id BOOLEAN PRIMARY KEY DEFAULT true CHECK (id = true),
+  paypal_username TEXT NOT NULL DEFAULT '',
+  paypal_email TEXT NOT NULL DEFAULT '',
+  usdt_address TEXT NOT NULL DEFAULT '',
+  usdt_network TEXT NOT NULL DEFAULT 'TRC-20 (Tron Network)',
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+INSERT INTO payment_settings (id) VALUES (true) ON CONFLICT DO NOTHING;
+
 -- 客户订单（结算页提交，含支付方式）
 CREATE TABLE IF NOT EXISTS orders (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -124,42 +135,57 @@ CREATE TABLE IF NOT EXISTS reviews (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- ⚠️ 上线前请收紧权限（当前为 mybirkin 同款宽松策略，仅保证可用）：
--- 公开读取
+-- ── 权限策略 ──
+-- 前台（anon key）只读目录/首页/联系方式/关于/支付设置；
+-- 客户可提交订单和评论（INSERT）；
+-- 所有增删改由服务端 /api/admin 使用 service_role key 完成（service_role 默认绕过 RLS）。
 ALTER TABLE products ENABLE ROW LEVEL SECURITY;
 ALTER TABLE product_subcategories ENABLE ROW LEVEL SECURITY;
 ALTER TABLE homepage_hero ENABLE ROW LEVEL SECURITY;
 ALTER TABLE homepage_sections ENABLE ROW LEVEL SECURITY;
 ALTER TABLE contact_links ENABLE ROW LEVEL SECURITY;
 ALTER TABLE about_page ENABLE ROW LEVEL SECURITY;
+ALTER TABLE payment_settings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
 ALTER TABLE reviews ENABLE ROW LEVEL SECURITY;
 
+-- 清理旧版宽松写策略（避免重复执行后仍保留 public_insert/update/delete）
+DROP POLICY IF EXISTS "public_read" ON products;
+DROP POLICY IF EXISTS "public_insert" ON products;
+DROP POLICY IF EXISTS "public_update" ON products;
+DROP POLICY IF EXISTS "public_delete" ON products;
+DROP POLICY IF EXISTS "public_read" ON product_subcategories;
+DROP POLICY IF EXISTS "public_insert" ON product_subcategories;
+DROP POLICY IF EXISTS "public_update" ON product_subcategories;
+DROP POLICY IF EXISTS "public_delete" ON product_subcategories;
+DROP POLICY IF EXISTS "public_read" ON homepage_hero;
+DROP POLICY IF EXISTS "public_insert" ON homepage_hero;
+DROP POLICY IF EXISTS "public_update" ON homepage_hero;
+DROP POLICY IF EXISTS "public_read" ON homepage_sections;
+DROP POLICY IF EXISTS "public_insert" ON homepage_sections;
+DROP POLICY IF EXISTS "public_update" ON homepage_sections;
+DROP POLICY IF EXISTS "public_delete" ON homepage_sections;
+DROP POLICY IF EXISTS "public_read" ON contact_links;
+DROP POLICY IF EXISTS "public_insert" ON contact_links;
+DROP POLICY IF EXISTS "public_update" ON contact_links;
+DROP POLICY IF EXISTS "public_delete" ON contact_links;
+DROP POLICY IF EXISTS "public_read" ON about_page;
+DROP POLICY IF EXISTS "public_insert" ON about_page;
+DROP POLICY IF EXISTS "public_update" ON about_page;
+DROP POLICY IF EXISTS "public_read" ON orders;
+DROP POLICY IF EXISTS "public_insert" ON orders;
+DROP POLICY IF EXISTS "public_update" ON orders;
+DROP POLICY IF EXISTS "public_delete" ON orders;
+DROP POLICY IF EXISTS "public_read" ON reviews;
+DROP POLICY IF EXISTS "public_insert" ON reviews;
+
 CREATE POLICY "public_read" ON products FOR SELECT USING (true);
-CREATE POLICY "public_insert" ON products FOR INSERT WITH CHECK (true);
-CREATE POLICY "public_update" ON products FOR UPDATE USING (true) WITH CHECK (true);
-CREATE POLICY "public_delete" ON products FOR DELETE USING (true);
 CREATE POLICY "public_read" ON product_subcategories FOR SELECT USING (true);
-CREATE POLICY "public_insert" ON product_subcategories FOR INSERT WITH CHECK (true);
-CREATE POLICY "public_update" ON product_subcategories FOR UPDATE USING (true) WITH CHECK (true);
-CREATE POLICY "public_delete" ON product_subcategories FOR DELETE USING (true);
 CREATE POLICY "public_read" ON homepage_hero FOR SELECT USING (true);
-CREATE POLICY "public_insert" ON homepage_hero FOR INSERT WITH CHECK (true);
-CREATE POLICY "public_update" ON homepage_hero FOR UPDATE USING (true) WITH CHECK (true);
 CREATE POLICY "public_read" ON homepage_sections FOR SELECT USING (true);
-CREATE POLICY "public_insert" ON homepage_sections FOR INSERT WITH CHECK (true);
-CREATE POLICY "public_update" ON homepage_sections FOR UPDATE USING (true) WITH CHECK (true);
-CREATE POLICY "public_delete" ON homepage_sections FOR DELETE USING (true);
 CREATE POLICY "public_read" ON contact_links FOR SELECT USING (true);
-CREATE POLICY "public_insert" ON contact_links FOR INSERT WITH CHECK (true);
-CREATE POLICY "public_update" ON contact_links FOR UPDATE USING (true) WITH CHECK (true);
-CREATE POLICY "public_delete" ON contact_links FOR DELETE USING (true);
 CREATE POLICY "public_read" ON about_page FOR SELECT USING (true);
-CREATE POLICY "public_insert" ON about_page FOR INSERT WITH CHECK (true);
-CREATE POLICY "public_update" ON about_page FOR UPDATE USING (true) WITH CHECK (true);
-CREATE POLICY "public_read" ON orders FOR SELECT USING (true);
+CREATE POLICY "public_read" ON payment_settings FOR SELECT USING (true);
 CREATE POLICY "public_insert" ON orders FOR INSERT WITH CHECK (true);
-CREATE POLICY "public_update" ON orders FOR UPDATE USING (true) WITH CHECK (true);
-CREATE POLICY "public_delete" ON orders FOR DELETE USING (true);
 CREATE POLICY "public_read" ON reviews FOR SELECT USING (true);
 CREATE POLICY "public_insert" ON reviews FOR INSERT WITH CHECK (true);

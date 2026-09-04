@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getServiceSupabase } from "@/lib/supabase-server";
+import { getServerSupabase } from "@/lib/supabase-server";
 import { DATA_MODE, SITE_URL, SITE_NAME } from "@/lib/config";
 import { products as seedProducts } from "@/lib/data";
 import HomeClient from "./HomeClient";
@@ -50,6 +50,7 @@ function mapProduct(row: any) {
     colors: row.colors || [],
     sizes: row.sizes || [],
     images: row.images || [],
+    video: row.video_url || "",
     inStock: row.in_stock,
     featured: row.featured,
     newArrival: row.new_arrival,
@@ -67,7 +68,7 @@ async function fetchHomeData() {
     };
   }
 
-  const supabase = getServiceSupabase();
+  const supabase = getServerSupabase();
 
   try {
     const [heroResult, productsResult, sectionsResult] = await Promise.all([

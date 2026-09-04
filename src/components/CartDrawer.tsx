@@ -54,7 +54,7 @@ export default function CartDrawer() {
           ) : (
             <div className="flex flex-col gap-5">
               {state.items.map((item) => (
-                <div key={`${item.product.id}-${item.size || ""}`} className="flex gap-4 pb-5 border-b border-line">
+                <div key={`${item.product.id}-${item.size || ""}-${item.color || ""}`} className="flex gap-4 pb-5 border-b border-line">
                   <div className="w-20 h-24 bg-ivory flex-shrink-0">
                     <img
                       src={optimizeImage(item.product.images[0])}
@@ -76,7 +76,7 @@ export default function CartDrawer() {
                     <div className="flex items-center gap-2 mt-2.5">
                       <button
                         onClick={() =>
-                          dispatch({ type: "UPDATE_QTY", productId: item.product.id, quantity: item.quantity - 1 })
+                          dispatch({ type: "UPDATE_QTY", key: `${item.product.id}|${item.color || ""}|${item.size || ""}`, quantity: item.quantity - 1 })
                         }
                         className="w-6 h-6 flex items-center justify-center border border-line hover:bg-charcoal hover:text-paper hover:border-charcoal transition-colors"
                       >
@@ -85,14 +85,14 @@ export default function CartDrawer() {
                       <span className="text-sm w-5 text-center">{item.quantity}</span>
                       <button
                         onClick={() =>
-                          dispatch({ type: "UPDATE_QTY", productId: item.product.id, quantity: item.quantity + 1 })
+                          dispatch({ type: "UPDATE_QTY", key: `${item.product.id}|${item.color || ""}|${item.size || ""}`, quantity: item.quantity + 1 })
                         }
                         className="w-6 h-6 flex items-center justify-center border border-line hover:bg-charcoal hover:text-paper hover:border-charcoal transition-colors"
                       >
                         <Plus size={11} />
                       </button>
                       <button
-                        onClick={() => dispatch({ type: "REMOVE_ITEM", productId: item.product.id })}
+                        onClick={() => dispatch({ type: "REMOVE_ITEM", key: `${item.product.id}|${item.color || ""}|${item.size || ""}` })}
                         className="ml-auto p-1 text-smoke/40 hover:text-charcoal transition-colors"
                       >
                         <Trash2 size={13} />

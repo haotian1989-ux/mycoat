@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { ArrowLeft, Plus, Trash2, Edit3, Save, X, Layout, ShoppingBag, MessageCircle, Wallet, BookOpen, Inbox, ArrowUp, ArrowDown, Tags } from "lucide-react";
 import { useAdminSupabaseList, useAdminSupabaseSingle, useAdminSections, useAdminContact } from "@/lib/use-supabase-data";
-import { supabase } from "@/lib/supabase";
+import { adminFetch } from "@/lib/admin-api";
 import { Product, ProductSubcategory, ProductCategory, PaymentConfig } from "@/lib/types";
 import ImageUploader from "@/components/ImageUploader";
 import VideoUploader from "@/components/VideoUploader";
@@ -100,7 +100,13 @@ function ProductManager() {
           className="btn-primary text-[10px] gap-1 py-2 px-4"><Plus size={12} /> 添加产品</button>
       </div>
       {(editing || adding) && (
-        <ProductEditor product={editing!} subcategories={subcats.items} onSave={async (p) => { if (adding) { const err = await products.add(p); if (err) { alert("添加失败: " + err); return; } setAdding(false); } else { const err = await products.update(p.id, p); if (err) { alert("更新失败: " + err); return; } setEditing(null); } }} onCancel={() => { setEditing(null); setAdding(false); }} />
+        <ProductEditor product={editing!} subcategories={subcats.items} onSave={async (p) => {
+            if (!p.name.trim()) { alert("请输入产品名称"); return; }
+            if (!p.slug.trim()) { alert("Slug 不能为空"); return; }
+            if (products.items.some((x) => x.slug === p.slug && x.id !== p.id)) { alert("该 Slug 已存在，请修改后再保存"); return; }
+            if (adding) { const err = await products.add(p); if (err) { alert("添加失败: " + err); return; } setAdding(false); }
+            else { const err = await products.update(p.id, p); if (err) { alert("更新失败: " + err); return; } setEditing(null); }
+          }} onCancel={() => { setEditing(null); setAdding(false); }} />
       )}
       <div className="space-y-1">
         {products.items.map((p) => (
@@ -127,7 +133,8 @@ function ProductManager() {
 }
 
 function toSlug(name: string): string {
-  return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').replace(/-+/g, '-') || 'product';
+  const base = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').replace(/-+/g, '-');
+  return base || `product-${Date.now().toString(36)}`;
 }
 
 function ProductEditor({ product, subcategories, onSave, onCancel }: { product: Product; subcategories: ProductSubcategory[]; onSave: (p: Product) => void; onCancel: () => void }) {
@@ -340,13 +347,22 @@ function HomepageEditor() {
 
   useEffect(() => {
     if (hero.loaded && hero.value) {
-      const v = { ...hero.value };
-      const vv = v as any;
-      if (vv.primary_btn_label !== undefined) { vv.primaryBtnLabel = vv.primaryBtnLabel || vv.primary_btn_label; }
-      if (vv.secondary_btn_label !== undefined) { vv.secondaryBtnLabel = vv.secondaryBtnLabel || vv.secondary_btn_label; }
-      for (const key of Object.keys(HERO_DEFAULTS)) {
-        if (!vv[key] && (HERO_DEFAULTS as any)[key]) vv[key] = (HERO_DEFAULTS as any)[key];
-      }
+      const row: any = hero.value;
+      const vv: any = {
+        image: row.image ?? HERO_DEFAULTS.image,
+        tagline: row.tagline ?? HERO_DEFAULTS.tagline,
+        headline: row.headline ?? HERO_DEFAULTS.headline,
+        subtext: row.subtext ?? HERO_DEFAULTS.subtext,
+        primaryBtnLabel: row.primary_btn_label ?? row.primaryBtnLabel ?? HERO_DEFAULTS.primaryBtnLabel,
+        secondaryBtnLabel: row.secondary_btn_label ?? row.secondaryBtnLabel ?? HERO_DEFAULTS.secondaryBtnLabel,
+        promiseTitle: row.promise_title ?? row.promiseTitle ?? HERO_DEFAULTS.promiseTitle,
+        promise1Title: row.promise_1_title ?? row.promise1Title ?? HERO_DEFAULTS.promise1Title,
+        promise1Text: row.promise_1_text ?? row.promise1Text ?? HERO_DEFAULTS.promise1Text,
+        promise2Title: row.promise_2_title ?? row.promise2Title ?? HERO_DEFAULTS.promise2Title,
+        promise2Text: row.promise_2_text ?? row.promise2Text ?? HERO_DEFAULTS.promise2Text,
+        promise3Title: row.promise_3_title ?? row.promise3Title ?? HERO_DEFAULTS.promise3Title,
+        promise3Text: row.promise_3_text ?? row.promise3Text ?? HERO_DEFAULTS.promise3Text,
+      };
       setForm((prev: any) => prev || vv);
     }
   }, [hero.loaded, hero.value]);
@@ -486,18 +502,34 @@ const PAYMENT_DEFAULTS: PaymentConfig = {
 };
 
 function PaymentEditor() {
+  const payment = useAdminSupabaseSingle("payment_settings", true, PAYMENT_DEFAULTS);
   const [form, setForm] = useState<PaymentConfig>(PAYMENT_DEFAULTS);
   const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    const stored = lsGet<PaymentConfig>(LS.payment);
-    if (stored) setForm({ ...PAYMENT_DEFAULTS, ...stored });
-  }, []);
+    if (payment.loaded && payment.value) {
+      const row: any = payment.value;
+      setForm({
+        paypalUsername: row.paypal_username ?? row.paypalUsername ?? PAYMENT_DEFAULTS.paypalUsername,
+        paypalEmail: row.paypal_email ?? row.paypalEmail ?? PAYMENT_DEFAULTS.paypalEmail,
+        usdtAddress: row.usdt_address ?? row.usdtAddress ?? PAYMENT_DEFAULTS.usdtAddress,
+        usdtNetwork: row.usdt_network ?? row.usdtNetwork ?? PAYMENT_DEFAULTS.usdtNetwork,
+      });
+    }
+  }, [payment.loaded, payment.value]);
+
+  if (!payment.loaded) return <div className="text-xs text-smoke/40 py-10">加载中...</div>;
 
   const upd = (key: keyof PaymentConfig, val: string) => setForm((f) => ({ ...f, [key]: val }));
 
-  const save = () => {
-    lsSet(LS.payment, form);
+  const save = async () => {
+    setSaving(true);
+    setError("");
+    const err = await payment.save(form);
+    setSaving(false);
+    if (err) { setError(err); return; }
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
@@ -534,7 +566,8 @@ function PaymentEditor() {
           </div>
         </div>
       </div>
-      <button onClick={save} className={`btn-primary ${saved ? "bg-green-800 border-0" : ""}`}>{saved ? "✓ 已保存" : "保存支付设置"}</button>
+      {error && <p className="text-xs text-red-500 bg-red-50 p-3 mb-4">{error}</p>}
+      <button onClick={save} disabled={saving} className={`btn-primary ${saved ? "bg-green-800 border-0" : ""}`}>{saving ? "保存中..." : saved ? "✓ 已保存" : "保存支付设置"}</button>
     </div>
   );
 }
@@ -680,12 +713,12 @@ function OrdersManager() {
       setLoaded(true);
       return;
     }
-    const { data, error } = await supabase.from("orders").select("*").order("created_at", { ascending: false });
-    if (error) {
-      console.error("[orders] load error:", error.message);
-      alert("加载订单失败: " + error.message);
-    } else {
+    try {
+      const { data } = await adminFetch("orders", "list");
       setOrders(data || []);
+    } catch (e: any) {
+      console.error("[orders] load error:", e?.message || e);
+      alert("加载订单失败: " + (e?.message || "未知错误"));
     }
     setLoaded(true);
   }, []);
@@ -701,8 +734,9 @@ function OrdersManager() {
       setBusy(false);
       return;
     }
-    const { error } = await supabase.from("orders").update({ status }).eq("id", id);
-    if (error) { alert("更新状态失败: " + error.message); setBusy(false); return; }
+    try {
+      await adminFetch("orders", "update", { status }, id);
+    } catch (e: any) { alert("更新状态失败: " + (e?.message || "未知错误")); setBusy(false); return; }
     setOrders((prev) => prev.map((o) => (o.id === id ? { ...o, status } : o)));
     setBusy(false);
   };
@@ -717,8 +751,9 @@ function OrdersManager() {
       setBusy(false);
       return;
     }
-    const { error } = await supabase.from("orders").delete().eq("id", id);
-    if (error) { alert("删除失败: " + error.message); setBusy(false); return; }
+    try {
+      await adminFetch("orders", "delete", undefined, id);
+    } catch (e: any) { alert("删除失败: " + (e?.message || "未知错误")); setBusy(false); return; }
     setOrders((prev) => prev.filter((o) => o.id !== id));
     setBusy(false);
   };

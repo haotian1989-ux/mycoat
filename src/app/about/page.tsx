@@ -1,6 +1,6 @@
 ﻿import type { Metadata } from "next";
 import Link from "next/link";
-import { getServiceSupabase } from "@/lib/supabase-server";
+import { getServerSupabase } from "@/lib/supabase-server";
 import { DATA_MODE } from "@/lib/config";
 
 export const dynamic = "force-dynamic";
@@ -32,7 +32,7 @@ const DEFAULT_ABOUT = {
 
 async function fetchAboutData() {
   if (DATA_MODE === "local") return DEFAULT_ABOUT;
-  const supabase = getServiceSupabase();
+  const supabase = getServerSupabase();
   try {
     const { data, error } = await supabase.from("about_page").select("*").limit(1).maybeSingle();
     if (error) {

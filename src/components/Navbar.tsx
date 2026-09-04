@@ -36,7 +36,9 @@ export default function Navbar() {
       return;
     }
     supabase.from("product_subcategories").select("*").order("sort_order", { ascending: true }).then(({ data, error }) => {
-      if (!error && data && data.length > 0) setSubcats(data as ProductSubcategory[]);
+      if (!error && data && data.length > 0) {
+        setSubcats(data.map((s: any) => ({ ...s, sortOrder: s.sort_order ?? 0 })) as ProductSubcategory[]);
+      }
     });
   }, []);
 

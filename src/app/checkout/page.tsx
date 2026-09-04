@@ -32,8 +32,21 @@ export default function CheckoutPage() {
   const shipping = total >= 200 ? 0 : 25;
 
   useEffect(() => {
-    const stored = lsGet<PaymentConfig>(LS.payment);
-    if (stored) setPayment({ ...DEFAULT_PAYMENT, ...stored });
+    if (DATA_MODE === "local") {
+      const stored = lsGet<PaymentConfig>(LS.payment);
+      if (stored) setPayment({ ...DEFAULT_PAYMENT, ...stored });
+      return;
+    }
+    supabase.from("payment_settings").select("*").limit(1).maybeSingle().then(({ data, error }) => {
+      if (!error && data) {
+        setPayment({
+          paypalUsername: data.paypal_username || "",
+          paypalEmail: data.paypal_email || "",
+          usdtAddress: data.usdt_address || "",
+          usdtNetwork: data.usdt_network || DEFAULT_PAYMENT.usdtNetwork,
+        });
+      }
+    });
   }, []);
 
   const upd = (key: string, val: string) => setForm((f) => ({ ...f, [key]: val }));

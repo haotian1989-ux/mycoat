@@ -47,6 +47,7 @@ function useProducts(): Product[] {
           colors: row.colors || [],
           sizes: row.sizes || [],
           images: row.images || [],
+          video: row.video_url || "",
           inStock: row.in_stock,
           featured: row.featured,
           newArrival: row.new_arrival,
@@ -74,7 +75,9 @@ function ShopContent() {
       return;
     }
     supabase.from("product_subcategories").select("*").order("sort_order", { ascending: true }).then(({ data, error }) => {
-      if (!error && data && data.length > 0) setSubcategories(data as ProductSubcategory[]);
+      if (!error && data && data.length > 0) {
+        setSubcategories(data.map((s: any) => ({ ...s, sortOrder: s.sort_order ?? 0 })) as ProductSubcategory[]);
+      }
     });
   }, []);
 

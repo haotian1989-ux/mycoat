@@ -16,23 +16,15 @@ interface Review {
 }
 
 async function saveReviewToSupabase(review: Review) {
-  // 本地模式：不写云端
+  // 本地模式：不写云端；云模式：公开评论（RLS 仅允许 INSERT/SELECT）
   if (DATA_MODE !== "supabase") return;
-  await fetch("/api/admin", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "x-admin-password": "mycoat2026" },
-    body: JSON.stringify({
-      table: "reviews",
-      action: "add",
-      data: {
-        id: review.id,
-        product_id: review.productId,
-        author: review.author,
-        rating: review.rating,
-        title: "",
-        content: review.content,
-      },
-    }),
+  await supabase.from("reviews").insert({
+    id: review.id,
+    product_id: review.productId,
+    author: review.author,
+    rating: review.rating,
+    title: "",
+    content: review.content,
   });
 }
 
