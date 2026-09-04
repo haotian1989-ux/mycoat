@@ -25,6 +25,7 @@ const CAMEL_FIELD_MAP: Record<string, string> = {
   best_for: "bestFor",
   base_price: "basePrice",
   swatch_image: "swatchImage",
+  video_url: "video",
 };
 
 function snakeToCamel(obj: any): any {
@@ -65,6 +66,7 @@ function toProductRow(obj: any): any {
     dimensions: obj.dimensions,
     colors: obj.colors,
     images: obj.images,
+    video_url: obj.video ?? obj.video_url ?? "",
     in_stock: obj.inStock ?? obj.in_stock,
     featured: obj.featured,
     new_arrival: obj.newArrival ?? obj.new_arrival,

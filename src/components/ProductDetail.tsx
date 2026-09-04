@@ -91,6 +91,23 @@ export default function ProductDetail({ product }: { product: Product }) {
                 ))}
               </div>
             )}
+            {product.video && (
+              <div className="mt-6">
+                <div className="aspect-[9/16] max-w-[320px] mx-auto overflow-hidden bg-night relative">
+                  <video
+                    src={product.video}
+                    className="w-full h-full object-cover"
+                    controls
+                    playsInline
+                    preload="metadata"
+                    poster={optimizeImage(product.images[0])}
+                  />
+                </div>
+                <p className="text-[10px] tracking-label uppercase text-smoke/50 text-center mt-2">
+                  Product Video
+                </p>
+              </div>
+            )}
           </div>
 
           <div className="flex flex-col justify-center">

@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS products (
   colors JSONB NOT NULL DEFAULT '[]',
   sizes JSONB NOT NULL DEFAULT '[]',
   images JSONB NOT NULL DEFAULT '[]',
+  video_url TEXT NOT NULL DEFAULT '',
   in_stock BOOLEAN NOT NULL DEFAULT true,
   featured BOOLEAN NOT NULL DEFAULT false,
   new_arrival BOOLEAN NOT NULL DEFAULT false,

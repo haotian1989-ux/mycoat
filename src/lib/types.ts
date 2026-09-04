@@ -14,6 +14,7 @@ export interface Product {
   colors: string[];
   sizes: string[];
   images: string[];
+  video?: string; // Cloudinary 产品视频（竖版 9:16 更佳）
   inStock: boolean;
   featured: boolean;
   newArrival: boolean;

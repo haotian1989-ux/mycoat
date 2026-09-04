@@ -7,6 +7,7 @@ import { useAdminSupabaseList, useAdminSupabaseSingle, useAdminSections, useAdmi
 import { supabase } from "@/lib/supabase";
 import { Product, ProductSubcategory, ProductCategory, PaymentConfig } from "@/lib/types";
 import ImageUploader from "@/components/ImageUploader";
+import VideoUploader from "@/components/VideoUploader";
 import { products as defaultProducts, defaultSubcategories as seedSubs } from "@/lib/data";
 import AdminGate from "@/components/AdminGate";
 import { DATA_MODE, LS, lsGet, lsSet } from "@/lib/config";
@@ -161,6 +162,13 @@ function ProductEditor({ product, subcategories, onSave, onCancel }: { product: 
               ))}
               <button onClick={() => upd("images", [...form.images, ""])} className="w-20 h-20 border-2 border-dashed border-line/50 flex items-center justify-center text-smoke/30 hover:text-smoke hover:border-line transition-colors"><Plus size={18} /></button>
             </div>
+          </div>
+          <div className="col-span-2">
+            <label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-2">产品视频（可选，竖版 9:16 效果最佳）</label>
+            <VideoUploader
+              value={form.video || ""}
+              onChange={(url) => upd("video", url)}
+            />
           </div>
           <div className="col-span-2"><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">细节（每行一个）</label><textarea value={form.details.join("\n")} onChange={(e) => upd("details", e.target.value.split("\n").filter(Boolean))} rows={4} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal resize-none" /></div>
         </div>
