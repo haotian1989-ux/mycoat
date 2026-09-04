@@ -111,7 +111,7 @@ export default function ProductDetail({ product }: { product: Product }) {
           </div>
 
           <div className="flex flex-col justify-center">
-            <p className="section-label capitalize">{product.category === "men" ? "Men" : "Women"}</p>
+            <p className="section-label capitalize">{product.category === "men" ? "Men" : product.category === "unisex" ? "Unisex" : "Women"}</p>
             <h1 className="font-serif text-2xl md:text-3xl mt-3 mb-4">{product.name}</h1>
             <p className="text-xl font-light mb-6">${product.price.toLocaleString()}</p>
             <p className="body-text mb-8">{product.description}</p>

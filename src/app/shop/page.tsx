@@ -13,6 +13,7 @@ const categories: { label: string; value: ProductCategory | "all" }[] = [
   { label: "All", value: "all" },
   { label: "Men", value: "men" },
   { label: "Women", value: "women" },
+  { label: "Unisex", value: "unisex" },
 ];
 
 const defaultSubcategories: ProductSubcategory[] = seedSubs as unknown as ProductSubcategory[];

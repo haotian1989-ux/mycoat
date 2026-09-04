@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS products (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
   slug TEXT NOT NULL UNIQUE,
-  category TEXT NOT NULL CHECK (category IN ('men', 'women')),
+  category TEXT NOT NULL CHECK (category IN ('men', 'women', 'unisex')),
   subcategory TEXT NOT NULL DEFAULT '',
   price INTEGER NOT NULL,
   description TEXT NOT NULL DEFAULT '',
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS products (
 CREATE TABLE IF NOT EXISTS product_subcategories (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
-  category TEXT NOT NULL CHECK (category IN ('men', 'women')),
+  category TEXT NOT NULL CHECK (category IN ('men', 'women', 'unisex')),
   sort_order INTEGER NOT NULL DEFAULT 0,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );

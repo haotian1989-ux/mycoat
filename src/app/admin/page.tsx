@@ -71,8 +71,8 @@ export default function AdminDashboard() {
   return <AdminGate><AdminContent /></AdminGate>;
 }
 
-const CATEGORY_LABELS: Record<string, string> = { men: "男装", women: "女装" };
-const CATEGORY_ORDER: ProductCategory[] = ["men", "women"];
+const CATEGORY_LABELS: Record<string, string> = { men: "男装", women: "女装", unisex: "男女同款" };
+const CATEGORY_ORDER: ProductCategory[] = ["men", "women", "unisex"];
 const defaultSubcategories: ProductSubcategory[] = seedSubs as unknown as ProductSubcategory[];
 
 // ── Product Manager ──
@@ -148,7 +148,7 @@ function ProductEditor({ product, subcategories, onSave, onCancel }: { product: 
         <div className="grid grid-cols-2 gap-4 mb-6">
           <div className="col-span-2"><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">名称</label><input value={form.name} onChange={(e) => { upd("name", e.target.value); if (!slugManualRef.current) upd("slug", toSlug(e.target.value)); }} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div>
           <div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">Slug <span className="text-smoke/30 font-normal lowercase">（自动生成）</span></label><input value={form.slug} onChange={(e) => { upd("slug", e.target.value); slugManualRef.current = true; }} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div>
-          <div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">分类</label><select value={form.category} onChange={(e) => { upd("category", e.target.value); upd("subcategory", ""); }} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal bg-paper"><option value="men">男装</option><option value="women">女装</option></select></div>
+          <div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">分类</label><select value={form.category} onChange={(e) => { upd("category", e.target.value); upd("subcategory", ""); }} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal bg-paper"><option value="men">男装</option><option value="women">女装</option><option value="unisex">男女同款</option></select></div>
           <div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">子分类</label><select value={form.subcategory || ""} onChange={(e) => upd("subcategory", e.target.value)} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal bg-paper"><option value="">无子分类</option>{subcategories.filter((s) => s.category === form.category).sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)).map((s) => (<option key={s.id} value={s.id}>{s.name}</option>))}</select></div>
           <div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">价格 ($)</label><input type="number" value={form.price} onChange={(e) => upd("price", Number(e.target.value))} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div>
           <div className="col-span-2 flex items-center gap-4"><label className="flex items-center gap-1.5 text-xs"><input type="checkbox" checked={form.featured} onChange={(e) => upd("featured", e.target.checked)} className="accent-charcoal" /> 精选</label><label className="flex items-center gap-1.5 text-xs"><input type="checkbox" checked={form.newArrival} onChange={(e) => upd("newArrival", e.target.checked)} className="accent-charcoal" /> 新品</label><label className="flex items-center gap-1.5 text-xs"><input type="checkbox" checked={form.inStock} onChange={(e) => upd("inStock", e.target.checked)} className="accent-charcoal" /> 有库存</label></div>
@@ -251,7 +251,7 @@ function CategoryManager() {
       <div className="flex justify-between items-center mb-6">
         <div>
           <h2 className="font-serif text-lg">分类管理</h2>
-          <p className="text-xs text-smoke/60">子分类挂在男装/女装两大主分类下，用于前台更细粒度的浏览筛选</p>
+          <p className="text-xs text-smoke/60">子分类挂在男装/女装/男女同款三大主分类下，用于前台更细粒度的浏览筛选</p>
         </div>
       </div>
 

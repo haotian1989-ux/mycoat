@@ -30,6 +30,7 @@ export default function Footer() {
               <Link href="/shop" className="hover:text-paper hover:pl-1 transition-all duration-300">All Products</Link>
               <Link href="/shop?category=men" className="hover:text-paper hover:pl-1 transition-all duration-300">Men</Link>
               <Link href="/shop?category=women" className="hover:text-paper hover:pl-1 transition-all duration-300">Women</Link>
+              <Link href="/shop?category=unisex" className="hover:text-paper hover:pl-1 transition-all duration-300">Unisex</Link>
               <Link href="/shop?category=women&subcategory=women_parka" className="hover:text-paper hover:pl-1 transition-all duration-300">Parkas</Link>
             </div>
           </div>

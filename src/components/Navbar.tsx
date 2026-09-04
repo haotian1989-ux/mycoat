@@ -13,6 +13,7 @@ import { defaultSubcategories } from "@/lib/data";
 const categories = [
   { href: "/shop?category=men", label: "Men", key: "men" },
   { href: "/shop?category=women", label: "Women", key: "women" },
+  { href: "/shop?category=unisex", label: "Unisex", key: "unisex" },
 ];
 
 const notices = [
