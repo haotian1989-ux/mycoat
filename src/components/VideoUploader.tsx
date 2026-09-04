@@ -28,12 +28,12 @@ export default function VideoUploader({ value, onChange, label }: VideoUploaderP
 
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("upload_preset", "mybirkin_uploads");
+    formData.append("upload_preset", "mycoat_uploads");
 
     const xhr = new XMLHttpRequest();
     xhr.open(
       "POST",
-      "https://api.cloudinary.com/v1_1/vzsmwu1w/video/upload"
+      "https://api.cloudinary.com/v1_1/kvbhbm8b/video/upload"
     );
     xhr.upload.onprogress = (ev) => {
       if (ev.lengthComputable) {
