@@ -71,7 +71,7 @@ export default function ProductDetail({ product }: { product: Product }) {
         </nav>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-20">
-          <div>
+          <div className="min-w-0">
             <div className="aspect-[3/4] overflow-hidden bg-ivory/50 relative group">
               {optimizeImage(product.images[imgIndex]) && <ImageLightbox src={optimizeImage(product.images[imgIndex])} alt={product.name} />}
               {product.images.length > 1 && (
@@ -83,7 +83,7 @@ export default function ProductDetail({ product }: { product: Product }) {
               {product.newArrival && <span className="absolute top-4 left-4 bg-gold text-paper px-3 py-1.5 text-[10px] tracking-label uppercase font-semibold">New</span>}
             </div>
             {product.images.length > 1 && (
-              <div className="flex gap-2 mt-3">
+              <div className="flex gap-2 mt-3 overflow-x-auto pb-2 [scrollbar-width:thin]">
                 {product.images.map((img, i) => (
                   <button key={i} onClick={() => setImgIndex(i)} className={`w-16 h-20 flex-shrink-0 ${i === imgIndex ? "ring-1 ring-charcoal ring-offset-2" : "opacity-50 hover:opacity-80"}`}>
                     <img src={optimizeImage(img)} alt="" className="w-full h-full object-cover" />
