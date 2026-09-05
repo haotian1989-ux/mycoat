@@ -251,7 +251,7 @@ export function useAdminContact(defaultLinks: any[]) {
       if (!error && data && data.length > 0) setLinks(data);
       setLoaded(true);
     });
-  }, [defaultLinks]);
+  }, []);
 
   const save = useCallback(async (newLinks: any[]): Promise<string | null> => {
     setLinks(newLinks);
