@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, Check, Truck } from "lucide-react";
 import { useCart } from "@/components/CartContext";
@@ -18,6 +18,12 @@ export default function ProductDetail({ product }: { product: Product }) {
   const [selectedColor, setSelectedColor] = useState("");
   const [selectedSize, setSelectedSize] = useState("");
   const [added, setAdded] = useState(false);
+  const thumbRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = thumbRef.current?.querySelector(`[data-idx="${imgIndex}"]`) as HTMLElement;
+    el?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+  }, [imgIndex]);
 
   if (!product) return null;
 
@@ -83,12 +89,16 @@ export default function ProductDetail({ product }: { product: Product }) {
               {product.newArrival && <span className="absolute top-4 left-4 bg-gold text-paper px-3 py-1.5 text-[10px] tracking-label uppercase font-semibold">New</span>}
             </div>
             {product.images.length > 1 && (
-              <div className="flex gap-2 mt-3 overflow-x-auto pb-2 [scrollbar-width:thin]">
-                {product.images.map((img, i) => (
-                  <button key={i} onClick={() => setImgIndex(i)} className={`w-16 h-20 flex-shrink-0 ${i === imgIndex ? "ring-1 ring-charcoal ring-offset-2" : "opacity-50 hover:opacity-80"}`}>
-                    <img src={optimizeImage(img)} alt="" className="w-full h-full object-cover" />
-                  </button>
-                ))}
+              <div className="relative mt-3">
+                <div ref={thumbRef} className="flex gap-2 overflow-x-auto pb-2 [scrollbar-width:thin] scroll-smooth px-7">
+                  {product.images.map((img, i) => (
+                    <button key={i} data-idx={i} onClick={() => setImgIndex(i)} className={`w-16 h-20 flex-shrink-0 ${i === imgIndex ? "ring-1 ring-charcoal ring-offset-2" : "opacity-50 hover:opacity-80"}`}>
+                      <img src={optimizeImage(img)} alt="" className="w-full h-full object-cover" />
+                    </button>
+                  ))}
+                </div>
+                <button onClick={prevImg} className="absolute left-0 top-1/2 -translate-y-1/2 bg-charcoal/70 hover:bg-charcoal text-paper p-1.5 rounded-full shadow-md z-10 transition-colors"><ChevronLeft size={14} /></button>
+                <button onClick={nextImg} className="absolute right-0 top-1/2 -translate-y-1/2 bg-charcoal/70 hover:bg-charcoal text-paper p-1.5 rounded-full shadow-md z-10 transition-colors"><ChevronRight size={14} /></button>
               </div>
             )}
             {product.video && (
