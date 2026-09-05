@@ -137,6 +137,37 @@ function toSlug(name: string): string {
   return base || `product-${Date.now().toString(36)}`;
 }
 
+function TagInput({ value, onChange, placeholder }: { value: string[]; onChange: (v: string[]) => void; placeholder?: string }) {
+  const [input, setInput] = useState("");
+  const add = () => {
+    const v = input.trim();
+    if (!v) return;
+    if (!value.includes(v)) onChange([...value, v]);
+    setInput("");
+  };
+  const remove = (i: number) => onChange(value.filter((_, idx) => idx !== i));
+  return (
+    <div className="border border-line px-3 py-2 focus-within:border-charcoal transition-colors">
+      <div className="flex flex-wrap items-center gap-2">
+        {value.map((tag, i) => (
+          <span key={i} className="inline-flex items-center gap-1.5 bg-charcoal text-paper px-2.5 py-1 text-xs rounded">
+            {tag}
+            <button onClick={() => remove(i)} className="hover:text-gold transition-colors"><X size={11} /></button>
+          </span>
+        ))}
+        <input
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); add(); } }}
+          onBlur={add}
+          placeholder={placeholder || "输入后按回车添加"}
+          className="flex-1 min-w-[120px] outline-none text-sm bg-transparent"
+        />
+      </div>
+    </div>
+  );
+}
+
 function ProductEditor({ product, subcategories, onSave, onCancel }: { product: Product; subcategories: ProductSubcategory[]; onSave: (p: Product) => void; onCancel: () => void }) {
   const [form, setForm] = useState<Product>({ ...product });
   const slugManualRef = useRef(false);
@@ -155,8 +186,8 @@ function ProductEditor({ product, subcategories, onSave, onCancel }: { product: 
           <div className="col-span-2"><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">描述</label><textarea value={form.description} onChange={(e) => upd("description", e.target.value)} rows={3} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal resize-none" /></div>
           <div className="col-span-2"><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">材质</label><input value={form.materials} onChange={(e) => upd("materials", e.target.value)} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div>
           <div className="col-span-2"><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">版型/尺寸说明</label><input value={form.dimensions} onChange={(e) => upd("dimensions", e.target.value)} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div>
-          <div className="col-span-2"><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">颜色（逗号分隔）</label><input value={form.colors.join(", ")} onChange={(e) => upd("colors", e.target.value.split(",").map((s) => s.trim()).filter(Boolean))} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div>
-          <div className="col-span-2"><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">尺码（逗号分隔）</label><input value={form.sizes.join(", ")} onChange={(e) => upd("sizes", e.target.value.split(",").map((s) => s.trim()).filter(Boolean))} placeholder="S, M, L, XL, XXL" className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div>
+          <div className="col-span-2"><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">颜色</label><TagInput value={form.colors} onChange={(v) => upd("colors", v)} placeholder="输入颜色后按回车，如 Black" /></div>
+          <div className="col-span-2"><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">尺码</label><TagInput value={form.sizes} onChange={(v) => upd("sizes", v)} placeholder="输入尺码后按回车，如 S、M、L" /></div>
           <div className="col-span-2">
             <label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-2">产品图片（第一张为主图）</label>
             <div className="flex flex-wrap gap-3 mb-2">
