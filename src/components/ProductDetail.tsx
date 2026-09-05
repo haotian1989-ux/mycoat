@@ -76,8 +76,8 @@ export default function ProductDetail({ product }: { product: Product }) {
               {optimizeImage(product.images[imgIndex]) && <ImageLightbox src={optimizeImage(product.images[imgIndex])} alt={product.name} />}
               {product.images.length > 1 && (
                 <>
-                  <button onClick={prevImg} className="absolute left-4 top-1/2 -translate-y-1/2 bg-paper/90 backdrop-blur p-2.5 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"><ChevronLeft size={16} /></button>
-                  <button onClick={nextImg} className="absolute right-4 top-1/2 -translate-y-1/2 bg-paper/90 backdrop-blur p-2.5 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"><ChevronRight size={16} /></button>
+                  <button onClick={prevImg} className="absolute left-4 top-1/2 -translate-y-1/2 bg-charcoal/70 hover:bg-charcoal text-paper backdrop-blur p-3 rounded-full shadow-lg transition-all"><ChevronLeft size={20} /></button>
+                  <button onClick={nextImg} className="absolute right-4 top-1/2 -translate-y-1/2 bg-charcoal/70 hover:bg-charcoal text-paper backdrop-blur p-3 rounded-full shadow-lg transition-all"><ChevronRight size={20} /></button>
                 </>
               )}
               {product.newArrival && <span className="absolute top-4 left-4 bg-gold text-paper px-3 py-1.5 text-[10px] tracking-label uppercase font-semibold">New</span>}
