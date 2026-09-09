@@ -21,8 +21,11 @@ export default function ProductDetail({ product }: { product: Product }) {
   const thumbRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const el = thumbRef.current?.querySelector(`[data-idx="${imgIndex}"]`) as HTMLElement;
-    el?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+    const container = thumbRef.current;
+    const el = container?.querySelector(`[data-idx="${imgIndex}"]`) as HTMLElement;
+    if (!container || !el) return;
+    const target = el.offsetLeft - (container.clientWidth - el.clientWidth) / 2;
+    container.scrollTo({ left: Math.max(0, target), behavior: "smooth" });
   }, [imgIndex]);
 
   if (!product) return null;
@@ -82,8 +85,8 @@ export default function ProductDetail({ product }: { product: Product }) {
               {optimizeImage(product.images[imgIndex]) && <ImageLightbox src={optimizeImage(product.images[imgIndex])} alt={product.name} />}
               {product.images.length > 1 && (
                 <>
-                  <button onClick={prevImg} className="absolute left-4 top-1/2 -translate-y-1/2 bg-charcoal/70 hover:bg-charcoal text-paper backdrop-blur p-3 rounded-full shadow-lg transition-all"><ChevronLeft size={20} /></button>
-                  <button onClick={nextImg} className="absolute right-4 top-1/2 -translate-y-1/2 bg-charcoal/70 hover:bg-charcoal text-paper backdrop-blur p-3 rounded-full shadow-lg transition-all"><ChevronRight size={20} /></button>
+                  <button onClick={(e) => { prevImg(); e.currentTarget.blur(); }} className="absolute left-4 top-1/2 -translate-y-1/2 bg-charcoal/70 hover:bg-charcoal text-paper backdrop-blur p-3 rounded-full shadow-lg transition-all"><ChevronLeft size={20} /></button>
+                  <button onClick={(e) => { nextImg(); e.currentTarget.blur(); }} className="absolute right-4 top-1/2 -translate-y-1/2 bg-charcoal/70 hover:bg-charcoal text-paper backdrop-blur p-3 rounded-full shadow-lg transition-all"><ChevronRight size={20} /></button>
                 </>
               )}
               {product.newArrival && <span className="absolute top-4 left-4 bg-gold text-paper px-3 py-1.5 text-[10px] tracking-label uppercase font-semibold">New</span>}
@@ -97,8 +100,8 @@ export default function ProductDetail({ product }: { product: Product }) {
                     </button>
                   ))}
                 </div>
-                <button onClick={prevImg} className="absolute left-0 top-1/2 -translate-y-1/2 bg-charcoal/70 hover:bg-charcoal text-paper p-1.5 rounded-full shadow-md z-10 transition-colors"><ChevronLeft size={14} /></button>
-                <button onClick={nextImg} className="absolute right-0 top-1/2 -translate-y-1/2 bg-charcoal/70 hover:bg-charcoal text-paper p-1.5 rounded-full shadow-md z-10 transition-colors"><ChevronRight size={14} /></button>
+                <button onClick={(e) => { prevImg(); e.currentTarget.blur(); }} className="absolute left-0 top-1/2 -translate-y-1/2 bg-charcoal/70 hover:bg-charcoal text-paper p-1.5 rounded-full shadow-md z-10 transition-colors"><ChevronLeft size={14} /></button>
+                <button onClick={(e) => { nextImg(); e.currentTarget.blur(); }} className="absolute right-0 top-1/2 -translate-y-1/2 bg-charcoal/70 hover:bg-charcoal text-paper p-1.5 rounded-full shadow-md z-10 transition-colors"><ChevronRight size={14} /></button>
               </div>
             )}
             {product.video && (
