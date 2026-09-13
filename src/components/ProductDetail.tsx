@@ -2,13 +2,14 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, Check, Truck } from "lucide-react";
+import { ChevronLeft, ChevronRight, Check, Truck, MessageCircle } from "lucide-react";
 import { useCart } from "@/components/CartContext";
 import Reviews from "@/components/Reviews";
 import ImageLightbox from "@/components/ImageLightbox";
 import { optimizeImage } from "@/lib/image";
 import { Product } from "@/lib/types";
-import { SITE_URL, SITE_NAME } from "@/lib/config";
+import { SITE_URL, SITE_NAME, DATA_MODE, LS, lsGet } from "@/lib/config";
+import { supabase } from "@/lib/supabase";
 
 const BASE = SITE_URL;
 
@@ -19,6 +20,20 @@ export default function ProductDetail({ product }: { product: Product }) {
   const [selectedSize, setSelectedSize] = useState("");
   const [added, setAdded] = useState(false);
   const thumbRef = useRef<HTMLDivElement>(null);
+  const [whatsappUrl, setWhatsappUrl] = useState("");
+
+  useEffect(() => {
+    if (DATA_MODE === "local") {
+      const stored = lsGet<{ type: string; url: string }[]>(LS.contact);
+      const wa = (stored || []).find((l) => l.type === "whatsapp");
+      if (wa?.url) setWhatsappUrl(wa.url);
+    } else {
+      supabase.from("contact_links").select("*").then(({ data }) => {
+        const wa = (data || []).find((l: any) => l.type === "whatsapp");
+        if (wa?.url) setWhatsappUrl(wa.url);
+      });
+    }
+  }, []);
 
   useEffect(() => {
     const container = thumbRef.current;
@@ -161,10 +176,18 @@ export default function ProductDetail({ product }: { product: Product }) {
               </div>
             )}
 
-            <button onClick={handleAdd} disabled={!product.inStock}
-              className={`btn-primary w-full md:w-auto mb-6 ${added ? "bg-green-800 hover:bg-green-800 border-0" : ""}`}>
-              {added ? (<><Check size={15} className="mr-2" /> Added to Bag</>) : product.inStock ? "Add to Bag" : "Out of Stock"}
-            </button>
+            <div className="space-y-3 mb-6">
+              <button onClick={handleAdd} disabled={!product.inStock}
+                className={`btn-primary w-full md:w-auto ${added ? "bg-green-800 hover:bg-green-800 border-0" : ""}`}>
+                {added ? (<><Check size={15} className="mr-2" /> Added to Bag</>) : product.inStock ? "Add to Bag" : "Out of Stock"}
+              </button>
+              {whatsappUrl && (
+                <a href={whatsappUrl} target="_blank" rel="noopener noreferrer"
+                  className="btn-outline w-full md:w-auto inline-flex items-center justify-center gap-2 border-[#25D366]/40 text-[#128C7E] hover:bg-[#25D366]/10 hover:border-[#25D366]">
+                  <MessageCircle size={15} strokeWidth={1.5} /> Ask on WhatsApp
+                </a>
+              )}
+            </div>
 
             <div className="flex items-center gap-2 text-xs text-smoke/60 mb-10">
               <Truck size={14} strokeWidth={1.5} />
