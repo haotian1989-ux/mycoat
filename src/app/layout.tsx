@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     template: `%s | ${SITE_NAME}`,
   },
   description:
-    "Premium down jackets and puffer coats. 90/10 European goose down, water-repellent shells, honest prices. Free worldwide shipping.",
+    "Premium down jackets and puffer coats. 90/10 European goose down, water-repellent shells, honest prices.",
   keywords: ["down jacket", "puffer coat", "luxury down", "winter coat", "goose down jacket", "alpine style"],
   openGraph: {
     type: "website",

@@ -17,7 +17,6 @@ const categories = [
 ];
 
 const notices = [
-  "Free worldwide shipping",
   "90/10 European goose down · 700+ fill power",
   "Pay with PayPal or USDT",
 ];

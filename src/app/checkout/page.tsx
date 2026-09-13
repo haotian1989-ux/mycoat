@@ -326,10 +326,10 @@ export default function CheckoutPage() {
           </div>
           <div className="border-t border-line pt-4 space-y-2.5 text-sm">
             <div className="flex justify-between text-smoke"><span>Subtotal</span><span>${total.toLocaleString()}</span></div>
-            <div className="flex justify-between text-smoke"><span>Shipping</span><span>{shipping === 0 ? "Free" : `$${shipping}`}</span></div>
+            <div className="flex justify-between text-smoke"><span>Shipping</span><span>Quoted on request</span></div>
             <div className="flex justify-between font-medium pt-3 border-t border-line"><span>Total</span><span>${grandTotal.toLocaleString()}</span></div>
           </div>
-          {shipping === 0 && <p className="text-xs text-gold mt-3">Free worldwide shipping</p>}
+          <p className="text-xs text-smoke/60 mt-3">Shipping cost is not included — contact us for a quote.</p>
         </div>
       </div>
     </div>

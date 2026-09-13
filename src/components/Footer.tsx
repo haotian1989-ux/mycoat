@@ -49,7 +49,7 @@ export default function Footer() {
           <span>© {year} MYCOAT</span>
           <div className="flex gap-6">
             <Link href="/admin" className="hover:text-paper/50 transition-colors">Admin</Link>
-            <span className="flex items-center gap-1.5"><span className="text-gold">●</span> Free worldwide shipping</span>
+            <span className="flex items-center gap-1.5"><span className="text-gold">●</span> Worldwide shipping</span>
           </div>
         </div>
       </div>

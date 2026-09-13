@@ -32,7 +32,7 @@ const DEFAULT_HERO = {
   promiseItems: [
     { title: "90/10 Goose Down", text: "European grey goose down with 700+ fill power — the same specification used by luxury alpine houses, at an honest price." },
     { title: "Weatherproof Shells", text: "Every jacket uses a water-repellent, windproof shell with YKK hardware. Built for real winters, not just looks." },
-    { title: "Free Shipping & Returns", text: "Free worldwide shipping with 30-day hassle-free returns. We stand behind every piece." },
+    { title: "30-Day Returns", text: "Hassle-free 30-day returns. We stand behind every piece. Shipping cost is quoted by our team." },
   ],
 };
 

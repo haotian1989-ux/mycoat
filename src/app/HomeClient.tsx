@@ -198,20 +198,6 @@ export default function HomeClient({
           </div>
         </div>
       </section>
-
-      {/* Shipping CTA */}
-      <section className="page-padding py-20 md:py-28 text-center max-w-3xl mx-auto">
-        <div className="flex items-center justify-center gap-4 mb-3">
-          <span className="h-px w-10 bg-gold/40" />
-          <p className="section-label">Easy Shopping</p>
-          <span className="h-px w-10 bg-gold/40" />
-        </div>
-        <h2 className="section-title mb-6">Free Worldwide Shipping</h2>
-        <p className="body-text max-w-xl mx-auto mb-10">
-          Worldwide delivery with full tracking. 30-day returns, no questions asked. Pay with PayPal or USDT.
-        </p>
-        <Link href="/shop" className="btn-primary">Shop the Collection</Link>
-      </section>
     </>
   );
 }
