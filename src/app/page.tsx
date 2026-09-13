@@ -25,7 +25,7 @@ const DEFAULT_HERO = {
   heroImage: "/products/mens-black-puffer.jpg",
   heroTagline: "Maison · Est. 2026",
   heroHeadline: "Warmth,\nRefined.",
-  heroSubtext: "Premium down jackets filled with 90/10 European goose down. Water-repellent shells, honest prices from $149.",
+  heroSubtext: "Premium down jackets filled with 90/10 European goose down. Water-repellent shells, honest prices from $149. Shipping cost not included — contact us for a quote.",
   heroPrimaryBtn: "Explore Collection",
   heroSecondaryBtn: "Our Craft",
   promiseTitle: "The MYCOAT Promise",

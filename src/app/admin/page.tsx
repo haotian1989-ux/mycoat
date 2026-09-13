@@ -350,7 +350,7 @@ const HERO_DEFAULTS = {
   image: "",
   tagline: "Maison · Est. 2026",
   headline: "Warmth,\nRefined.",
-  subtext: "Premium down jackets filled with 90/10 European goose down. Water-repellent shells, honest prices from $149.",
+  subtext: "Premium down jackets filled with 90/10 European goose down. Water-repellent shells, honest prices from $149. Shipping cost not included — contact us for a quote.",
   primaryBtnLabel: "Explore Collection",
   secondaryBtnLabel: "Our Craft",
   promiseTitle: "The MYCOAT Promise",
