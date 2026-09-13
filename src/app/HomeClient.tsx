@@ -206,7 +206,7 @@ export default function HomeClient({
           <p className="section-label">Easy Shopping</p>
           <span className="h-px w-10 bg-gold/40" />
         </div>
-        <h2 className="section-title mb-6">Free Shipping Over $200</h2>
+        <h2 className="section-title mb-6">Free Worldwide Shipping</h2>
         <p className="body-text max-w-xl mx-auto mb-10">
           Worldwide delivery with full tracking. 30-day returns, no questions asked. Pay with PayPal or USDT.
         </p>

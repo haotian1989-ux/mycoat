@@ -75,7 +75,7 @@ export default function CraftPage() {
         <p className="section-label mb-3">The Collection</p>
         <h2 className="section-title mb-4">Warmth, Refined.</h2>
         <p className="body-text max-w-md mx-auto mb-8">
-          Eight signature pieces, from $149. Free shipping over $200.
+          Eight signature pieces, from $149. Free worldwide shipping.
         </p>
         <Link href="/shop" className="btn-primary">Shop the Collection</Link>
       </section>

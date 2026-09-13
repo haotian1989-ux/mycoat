@@ -29,7 +29,7 @@ export default function CheckoutPage() {
     firstName: "", lastName: "", email: "", phone: "",
     address: "", city: "", postalCode: "", country: "",
   });
-  const shipping = total >= 200 ? 0 : 25;
+  const shipping = 0;
 
   useEffect(() => {
     if (DATA_MODE === "local") {
@@ -278,7 +278,7 @@ export default function CheckoutPage() {
                   className={`border p-6 text-left transition-colors ${method === "usdt" ? "border-charcoal bg-charcoal text-paper" : "border-line hover:border-charcoal/40"}`}
                 >
                   <p className="font-serif text-lg mb-1">USDT</p>
-                  <p className={`text-xs ${method === "usdt" ? "text-paper/60" : "text-smoke"}`}>Crypto payment (TRC-20). 5% discount applied at checkout manually.</p>
+                  <p className={`text-xs ${method === "usdt" ? "text-paper/60" : "text-smoke"}`}>Crypto payment (TRC-20).</p>
                 </button>
               </div>
 
@@ -329,7 +329,7 @@ export default function CheckoutPage() {
             <div className="flex justify-between text-smoke"><span>Shipping</span><span>{shipping === 0 ? "Free" : `$${shipping}`}</span></div>
             <div className="flex justify-between font-medium pt-3 border-t border-line"><span>Total</span><span>${grandTotal.toLocaleString()}</span></div>
           </div>
-          {shipping === 0 && <p className="text-xs text-gold mt-3">Free worldwide shipping unlocked</p>}
+          {shipping === 0 && <p className="text-xs text-gold mt-3">Free worldwide shipping</p>}
         </div>
       </div>
     </div>

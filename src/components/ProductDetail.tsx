@@ -168,7 +168,7 @@ export default function ProductDetail({ product }: { product: Product }) {
 
             <div className="flex items-center gap-2 text-xs text-smoke/60 mb-10">
               <Truck size={14} strokeWidth={1.5} />
-              <span>Free worldwide shipping on orders over $200</span>
+              <span>Free worldwide shipping</span>
             </div>
 
             <div className="border-t border-line pt-8 space-y-5">

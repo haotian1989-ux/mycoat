@@ -359,7 +359,7 @@ const HERO_DEFAULTS = {
   promise2Title: "Weatherproof Shells",
   promise2Text: "Every jacket uses a water-repellent, windproof shell with YKK hardware. Built for real winters, not just looks.",
   promise3Title: "Free Shipping & Returns",
-  promise3Text: "Free worldwide shipping on orders over $200, with 30-day hassle-free returns.",
+  promise3Text: "Free worldwide shipping with 30-day hassle-free returns.",
 };
 
 const SECTION_DEFAULTS = [
