@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { X, ZoomIn, ZoomOut } from "lucide-react";
+import { useState, useCallback, useEffect } from "react";
+import { X, ZoomIn, ZoomOut, ChevronLeft, ChevronRight } from "lucide-react";
 import { optimizeImage } from "@/lib/image";
 
 interface ImageLightboxProps {
@@ -9,18 +9,37 @@ interface ImageLightboxProps {
   alt: string;
   className?: string;
   hover?: boolean;
+  images?: string[];
+  index?: number;
 }
 
-export default function ImageLightbox({ src, alt, className = "", hover = true }: ImageLightboxProps) {
+export default function ImageLightbox({ src, alt, className = "", hover = true, images, index = 0 }: ImageLightboxProps) {
   const [open, setOpen] = useState(false);
   const [zoomed, setZoomed] = useState(false);
+  const [idx, setIdx] = useState(index);
   const optimizedSrc = optimizeImage(src);
+  const list = images && images.length > 0 ? images : [src];
+
+  useEffect(() => {
+    if (open) {
+      setIdx(Math.max(0, Math.min(index, list.length - 1)));
+      setZoomed(false);
+    }
+  }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const toggleLightbox = useCallback(() => setOpen((o) => !o), []);
   const toggleZoom = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
     setZoomed((z) => !z);
   }, []);
+
+  const go = useCallback((e: React.MouseEvent, dir: number) => {
+    e.stopPropagation();
+    setIdx((i) => (i + dir + list.length) % list.length);
+    setZoomed(false);
+  }, [list.length]);
+
+  const currentSrc = optimizeImage(list[idx]);
 
   if (!optimizedSrc) return <div className={className} />;
 
@@ -50,19 +69,42 @@ export default function ImageLightbox({ src, alt, className = "", hover = true }
           onClick={toggleLightbox}
         >
           <button
-            onClick={toggleLightbox}
+            onClick={(e) => { e.stopPropagation(); toggleLightbox(); }}
             className="absolute top-6 right-6 text-paper/60 hover:text-paper transition-colors z-10"
+            aria-label="Close"
           >
             <X size={24} strokeWidth={1} />
           </button>
           <button
             onClick={toggleZoom}
             className="absolute top-6 right-16 text-paper/60 hover:text-paper transition-colors z-10"
+            aria-label="Zoom"
           >
             {zoomed ? <ZoomOut size={24} strokeWidth={1} /> : <ZoomIn size={24} strokeWidth={1} />}
           </button>
+          {list.length > 1 && (
+            <>
+              <button
+                onClick={(e) => go(e, -1)}
+                className="absolute left-4 top-1/2 -translate-y-1/2 bg-paper/10 hover:bg-paper/25 text-paper p-3 rounded-full transition-colors z-10"
+                aria-label="Previous image"
+              >
+                <ChevronLeft size={24} strokeWidth={1.5} />
+              </button>
+              <button
+                onClick={(e) => go(e, 1)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 bg-paper/10 hover:bg-paper/25 text-paper p-3 rounded-full transition-colors z-10"
+                aria-label="Next image"
+              >
+                <ChevronRight size={24} strokeWidth={1.5} />
+              </button>
+              <span className="absolute bottom-6 left-1/2 -translate-x-1/2 text-paper/60 text-xs tracking-label">
+                {idx + 1} / {list.length}
+              </span>
+            </>
+          )}
           <img
-            src={optimizedSrc}
+            src={currentSrc}
             alt={alt}
             onClick={toggleZoom}
             className={`max-w-full max-h-full object-contain transition-transform duration-300 ${

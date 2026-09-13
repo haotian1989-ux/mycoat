@@ -82,7 +82,7 @@ export default function ProductDetail({ product }: { product: Product }) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-20">
           <div className="min-w-0">
             <div className="aspect-[3/4] overflow-hidden bg-ivory/50 relative group">
-              {optimizeImage(product.images[imgIndex]) && <ImageLightbox src={optimizeImage(product.images[imgIndex])} alt={product.name} />}
+              {optimizeImage(product.images[imgIndex]) && <ImageLightbox src={optimizeImage(product.images[imgIndex])} images={product.images.map(optimizeImage)} index={imgIndex} alt={product.name} />}
               {product.images.length > 1 && (
                 <>
                   <button onClick={(e) => { prevImg(); e.currentTarget.blur(); }} className="absolute left-4 top-1/2 -translate-y-1/2 bg-charcoal/70 hover:bg-charcoal text-paper backdrop-blur p-3 rounded-full shadow-lg transition-all"><ChevronLeft size={20} /></button>
