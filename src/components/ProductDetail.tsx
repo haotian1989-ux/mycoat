@@ -183,8 +183,8 @@ export default function ProductDetail({ product }: { product: Product }) {
               </button>
               {whatsappUrl && (
                 <a href={whatsappUrl} target="_blank" rel="noopener noreferrer"
-                  className="btn-outline w-full md:w-auto inline-flex items-center justify-center gap-2 border-[#25D366]/40 text-[#128C7E] hover:bg-[#25D366]/10 hover:border-[#25D366]">
-                  <MessageCircle size={15} strokeWidth={1.5} /> Ask on WhatsApp
+                  className="btn-primary w-full md:w-auto bg-[#25D366] border-[#25D366] hover:bg-[#1ea952] hover:border-[#1ea952] text-white inline-flex items-center justify-center gap-2">
+                  <MessageCircle size={16} strokeWidth={2} /> Contact via WhatsApp
                 </a>
               )}
             </div>
