@@ -1,0 +1,36 @@
+﻿  ▲ Next.js 14.2.35
+
+   Creating an optimized production build ...
+
+所在位置 行:8 字符: 1
++ & $node "node_modules/next/dist/bin/next" build *> "$proj\build3.log"
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+
+#
+# Fatal process out of memory: Zone
+#
+----- Native stack trace -----
+
+ 1: 00007FF7062B4BB7 
+ 2: 00007FF7061853FF 
+ 3: 00007FF707488576 
+ 4: 00007FF706E0F2D1 
+ 5: 00007FF7068F0B9B 
+ 6: 00007FF7075DEDDD 
+ 7: 00007FF7075DF18B 
+ 8: 00007FF7075AE172 
+ 9: 00007FF7075A482E 
+10: 00007FF7074B7B93 
+11: 00007FF70678A695 
+12: 00007FF706789BAA 
+13: 00007FF70676509B 
+14: 00007FF70676A8AF 
+15: 00007FF707015856 
+16: 00007FF7061881A0 
+17: 00007FF7063145F3 
+18: 00007FF707BA0E0B 
+19: 00007FFD872A54E0 
+20: 00007FFD88DC485B 

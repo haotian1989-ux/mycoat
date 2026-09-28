@@ -11,6 +11,7 @@ const TABLE_MAP: Record<string, string> = {
   about_page: "about_page",
   payment_settings: "payment_settings",
   orders: "orders",
+  blog_posts: "blog_posts",
 };
 
 function toSnake(obj: Record<string, any>): Record<string, any> {

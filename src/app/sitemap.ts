@@ -13,6 +13,7 @@ const staticPaths = [
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let slugs: string[] = defaultProducts.map((p) => p.slug);
+  let blogSlugs: string[] = [];
   if (DATA_MODE === "supabase") {
     try {
       const supabase = getServerSupabase();
@@ -20,8 +21,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       if (!error && data && data.length > 0) {
         slugs = data.map((row: any) => row.slug).filter(Boolean);
       }
+      const { data: blogData, error: blogError } = await supabase
+        .from("blog_posts")
+        .select("slug")
+        .eq("published", true);
+      if (!blogError && blogData) {
+        blogSlugs = blogData.map((row: any) => row.slug).filter(Boolean);
+      }
     } catch (e: any) {
-      console.error("[sitemap] products fetch failed:", e?.message || e);
+      console.error("[sitemap] fetch failed:", e?.message || e);
     }
   }
 
@@ -33,6 +41,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: now,
       changeFrequency: "weekly" as const,
       priority: 0.7,
+    })),
+    { url: `${BASE}/blog`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.6 },
+    ...blogSlugs.map((slug) => ({
+      url: `${BASE}/blog/${slug}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
     })),
     ...slugs.map((slug) => ({
       url: `${BASE}/product/${slug}`,

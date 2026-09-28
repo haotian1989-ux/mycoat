@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
-import { ArrowLeft, Plus, Trash2, Edit3, Save, X, Layout, ShoppingBag, MessageCircle, Wallet, BookOpen, Inbox, ArrowUp, ArrowDown, Tags } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, Edit3, Save, X, Layout, ShoppingBag, MessageCircle, Wallet, BookOpen, Inbox, ArrowUp, ArrowDown, Tags, FileText, ChevronLeft } from "lucide-react";
 import { useAdminSupabaseList, useAdminSupabaseSingle, useAdminSections, useAdminContact } from "@/lib/use-supabase-data";
 import { adminFetch } from "@/lib/admin-api";
 import { Product, ProductSubcategory, ProductCategory, PaymentConfig } from "@/lib/types";
@@ -12,7 +12,7 @@ import { products as defaultProducts, defaultSubcategories as seedSubs } from "@
 import AdminGate from "@/components/AdminGate";
 import { DATA_MODE, LS, lsGet, lsSet } from "@/lib/config";
 
-type AdminTab = "products" | "categories" | "homepage" | "contact" | "payment" | "about" | "orders";
+type AdminTab = "products" | "categories" | "homepage" | "contact" | "payment" | "about" | "orders" | "blogs";
 
 const tabs: { key: AdminTab; label: string; icon: any }[] = [
   { key: "products", label: "产品管理", icon: ShoppingBag },
@@ -21,6 +21,7 @@ const tabs: { key: AdminTab; label: string; icon: any }[] = [
   { key: "contact", label: "联系方式", icon: MessageCircle },
   { key: "payment", label: "支付设置", icon: Wallet },
   { key: "about", label: "关于我们", icon: BookOpen },
+  { key: "blogs", label: "博客管理", icon: FileText },
   { key: "orders", label: "客户订单", icon: Inbox },
 ];
 
@@ -61,6 +62,7 @@ function AdminContent() {
         {activeTab === "contact" && <ContactEditor />}
         {activeTab === "payment" && <PaymentEditor />}
         {activeTab === "about" && <AboutEditor />}
+        {activeTab === "blogs" && <BlogEditor />}
         {activeTab === "orders" && <OrdersManager />}
       </div>
     </div>
@@ -868,6 +870,154 @@ function OrdersManager() {
               </div>
             );
           })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Blog Manager ──
+interface BlogPost {
+  id?: string;
+  slug: string;
+  title: string;
+  meta_description: string;
+  excerpt: string;
+  cover_image: string;
+  content: string;
+  published: boolean;
+  created_at?: string;
+  updated_at?: string;
+}
+
+const EMPTY_BLOG: BlogPost = {
+  slug: "", title: "", meta_description: "", excerpt: "", cover_image: "", content: "", published: true,
+};
+
+function BlogEditor() {
+  const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [loaded, setLoaded] = useState(false);
+  const [editing, setEditing] = useState<BlogPost | null>(null);
+  const [adding, setAdding] = useState(false);
+  const [busy, setBusy] = useState(false);
+
+  const load = useCallback(async () => {
+    if (DATA_MODE === "local") { setPosts([]); setLoaded(true); return; }
+    try {
+      const { data } = await adminFetch("blog_posts", "list");
+      setPosts(data || []);
+    } catch (e: any) {
+      alert("加载博客失败: " + (e?.message || "未知错误"));
+    }
+    setLoaded(true);
+  }, []);
+
+  useEffect(() => { load(); }, [load]);
+
+  if (!loaded) return <div className="text-xs text-smoke/40 py-10">加载中...</div>;
+
+  const save = async (p: BlogPost) => {
+    if (!p.title.trim()) { alert("请输入文章标题"); return; }
+    if (!p.slug.trim()) { alert("Slug 不能为空"); return; }
+    if (posts.some((x) => x.slug === p.slug && x.id !== p.id)) { alert("该 Slug 已存在，请修改后再保存"); return; }
+    setBusy(true);
+    try {
+      if (adding) {
+        await adminFetch("blog_posts", "add", p);
+      } else if (editing?.id) {
+        await adminFetch("blog_posts", "update", p, editing.id);
+      }
+      setBusy(false);
+      setAdding(false);
+      setEditing(null);
+      load();
+    } catch (e: any) {
+      setBusy(false);
+      alert("保存失败: " + (e?.message || "未知错误"));
+    }
+  };
+
+  const remove = async (p: BlogPost) => {
+    if (!window.confirm(`确定删除文章「${p.title || p.slug}」吗？`)) return;
+    try {
+      await adminFetch("blog_posts", "delete", undefined, p.id);
+      load();
+    } catch (e: any) {
+      alert("删除失败: " + (e?.message || "未知错误"));
+    }
+  };
+
+  if (editing || adding) {
+    const f = editing || EMPTY_BLOG;
+    const upd = (k: keyof BlogPost, v: any) => setEditing((prev) => ({ ...(prev || EMPTY_BLOG), [k]: v }));
+    return (
+      <div className="max-w-3xl">
+        <div className="flex items-center gap-3 mb-6">
+          <button onClick={() => { setEditing(null); setAdding(false); }} className="btn-outline text-[10px] py-1.5 px-3"><ChevronLeft size={12} className="mr-1" />返回列表</button>
+          <h2 className="font-serif text-lg">{adding ? "新建文章" : "编辑文章"}</h2>
+        </div>
+        <div className="space-y-4 mb-6">
+          <div>
+            <label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">标题（Title）</label>
+            <input value={f.title} onChange={(e) => setEditing((prev) => ({ ...(prev || EMPTY_BLOG), title: e.target.value, slug: prev?.slug || toSlug(e.target.value) }))} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" />
+          </div>
+          <div>
+            <label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">Slug（网址标识，自动生成可修改）</label>
+            <input value={f.slug} onChange={(e) => upd("slug", e.target.value)} placeholder="is-700-fill-power-enough" className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal font-mono text-xs" />
+            <p className="text-[10px] text-smoke/40 mt-1">前台访问地址：/blog/{f.slug}</p>
+          </div>
+          <div>
+            <label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">Meta 描述（SEO）</label>
+            <textarea value={f.meta_description} onChange={(e) => upd("meta_description", e.target.value)} rows={2} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal resize-none" />
+          </div>
+          <div>
+            <label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">摘要（列表页展示，可留空自动取正文开头）</label>
+            <textarea value={f.excerpt} onChange={(e) => upd("excerpt", e.target.value)} rows={2} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal resize-none" />
+          </div>
+          <div>
+            <label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">正文（支持标题行、列表行、空行分段）</label>
+            <textarea value={f.content} onChange={(e) => upd("content", e.target.value)} rows={16} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal leading-relaxed" />
+          </div>
+          <label className="flex items-center gap-1.5 text-xs"><input type="checkbox" checked={f.published} onChange={(e) => upd("published", e.target.checked)} className="accent-charcoal" /> 发布（勾选后前台可见）</label>
+        </div>
+        <div className="flex gap-3">
+          <button onClick={() => save(f)} disabled={busy} className="btn-primary text-xs py-2 px-6"><Save size={14} className="mr-1" />{busy ? "保存中..." : "保存文章"}</button>
+          <button onClick={() => { setEditing(null); setAdding(false); }} className="btn-outline text-xs py-2 px-6"><X size={14} className="mr-1" />取消</button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-3xl">
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h2 className="font-serif text-lg">博客文章</h2>
+          <p className="text-xs text-smoke/60">发布引流博客文章，前台 /blog 展示{DATA_MODE === "local" ? "（本地模式无数据，需云端模式）" : ""}</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <Link href="/blog" target="_blank" className="btn-outline text-[10px] py-1.5 px-3">查看博客</Link>
+          <button onClick={() => { setAdding(true); setEditing(EMPTY_BLOG); }} className="btn-primary text-[10px] gap-1 py-2 px-4"><Plus size={12} /> 新建文章</button>
+        </div>
+      </div>
+      {posts.length === 0 ? (
+        <p className="text-xs text-smoke/40 py-10 text-center border border-dashed border-line">暂无文章，点击「新建文章」发布第一篇引流博客</p>
+      ) : (
+        <div className="space-y-1">
+          {posts.map((p) => (
+            <div key={p.id} className="flex items-center gap-4 p-4 border border-line/50 hover:border-line transition-colors">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <p className="text-sm font-medium truncate">{p.title || "未命名"}</p>
+                  {p.published ? <span className="text-[9px] bg-green-100 text-green-800 px-1.5 py-0.5">已发布</span> : <span className="text-[9px] bg-gold/10 text-gold px-1.5 py-0.5">草稿</span>}
+                </div>
+                <p className="text-[11px] text-smoke font-mono truncate">/blog/{p.slug}</p>
+              </div>
+              <Link href={`/blog/${p.slug}`} target="_blank" className="p-1.5 text-smoke/30 hover:text-charcoal" title="查看"><FileText size={14} /></Link>
+              <button onClick={() => { setEditing({ ...p }); setAdding(false); }} className="p-1.5 text-smoke/30 hover:text-charcoal" title="编辑"><Edit3 size={14} /></button>
+              <button onClick={() => remove(p)} className="p-1.5 text-smoke/30 hover:text-red-500" title="删除"><Trash2 size={14} /></button>
+            </div>
+          ))}
         </div>
       )}
     </div>

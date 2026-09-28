@@ -117,6 +117,10 @@ export default function Navbar() {
               Our Story
               <span className="absolute -bottom-1 left-0 w-0 group-hover:w-full h-px bg-gold transition-all duration-300" />
             </Link>
+            <Link href="/blog" className="text-[11px] tracking-label uppercase text-smoke hover:text-charcoal transition-colors duration-300 relative group">
+              Journal
+              <span className="absolute -bottom-1 left-0 w-0 group-hover:w-full h-px bg-gold transition-all duration-300" />
+            </Link>
           </div>
 
           <div className="flex items-center gap-1">
@@ -183,6 +187,7 @@ export default function Navbar() {
 
             <Link href="/craft" onClick={() => setMobileOpen(false)} className="text-sm tracking-label uppercase text-smoke hover:text-charcoal transition-colors py-1.5">Craft</Link>
             <Link href="/about" onClick={() => setMobileOpen(false)} className="text-sm tracking-label uppercase text-smoke hover:text-charcoal transition-colors py-1.5">Our Story</Link>
+            <Link href="/blog" onClick={() => setMobileOpen(false)} className="text-sm tracking-label uppercase text-smoke hover:text-charcoal transition-colors py-1.5">Journal</Link>
 
             <div className="pt-3 border-t border-line mt-1">
               <button

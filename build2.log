@@ -1,0 +1,13 @@
+﻿  ▲ Next.js 14.2.35
+
+   Creating an optimized production build ...
+node.exe : memory allocation of memory allocation of memory allocation of 424242 bytes failed
+所在位置 行:4 字符: 1
++ & $node "node_modules/next/dist/bin/next" build *> "$proj\build2.log"
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (memory allocati...42 bytes failed:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+ bytes failed
+ bytes failed
+Next.js build worker exited with code: 3221226505 and signal: null

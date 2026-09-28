@@ -189,3 +189,21 @@ CREATE POLICY "public_read" ON payment_settings FOR SELECT USING (true);
 CREATE POLICY "public_insert" ON orders FOR INSERT WITH CHECK (true);
 CREATE POLICY "public_read" ON reviews FOR SELECT USING (true);
 CREATE POLICY "public_insert" ON reviews FOR INSERT WITH CHECK (true);
+
+-- ── 博客 ──
+CREATE TABLE IF NOT EXISTS blog_posts (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  slug TEXT UNIQUE NOT NULL,
+  title TEXT NOT NULL DEFAULT '',
+  meta_description TEXT NOT NULL DEFAULT '',
+  excerpt TEXT NOT NULL DEFAULT '',
+  cover_image TEXT NOT NULL DEFAULT '',
+  content TEXT NOT NULL DEFAULT '',
+  published BOOLEAN NOT NULL DEFAULT false,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+ALTER TABLE blog_posts ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "public_read" ON blog_posts;
+CREATE POLICY "public_read" ON blog_posts FOR SELECT USING (published = true);
