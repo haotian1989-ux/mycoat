@@ -51,6 +51,30 @@ const jsonLd = {
       name: SITE_NAME,
       publisher: { "@id": SITE_URL + "/#org" },
     },
+    {
+      "@type": "ClothingStore",
+      "@id": SITE_URL + "/#store",
+      name: SITE_NAME,
+      url: SITE_URL,
+      description: "Premium down jackets filled with 90/10 European goose down and 700+ fill power at honest prices.",
+      currenciesAccepted: "USD",
+      paymentAccepted: "PayPal, Cryptocurrency",
+      email: "mailto:hello@mycoat.shop",
+      priceRange: "$$",
+      hasOfferCatalog: {
+        "@type": "OfferCatalog",
+        name: "Luxury Down Jackets",
+        itemListElement: [
+          {
+            "@type": "Offer",
+            itemOffered: {
+              "@type": "Product",
+              name: "Luxury Goose Down Jackets & Puffers",
+            },
+          },
+        ],
+      },
+    },
   ],
 };
 
