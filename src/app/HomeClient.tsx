@@ -81,7 +81,7 @@ export default function HomeClient({
         {/* 暗调氛围渐变 */}
         <div className="absolute inset-0 bg-gradient-to-r from-night via-night/60 to-night/20 z-10" />
         <div className="absolute inset-0 bg-gradient-to-t from-night via-transparent to-night/30 z-10" />
-        {hero.heroImage && <img src={optimizeImage(hero.heroImage)} alt="" className="absolute inset-0 w-full h-full object-cover object-center" />}
+        {hero.heroImage && <img src={optimizeImage(hero.heroImage)} alt="MYCOAT premium goose down jacket — 90/10 European goose down, 700+ fill power" className="absolute inset-0 w-full h-full object-cover object-center" />}
 
         <div className="relative z-20 page-padding w-full">
           <div className="max-w-2xl animate-floatIn">

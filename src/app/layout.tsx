@@ -13,24 +13,24 @@ import { SITE_URL, SITE_NAME } from "@/lib/config";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${SITE_NAME} | Luxury Down Jackets`,
+    default: `${SITE_NAME} | Premium 700+ Fill Power Luxury Down Jackets & Puffers`,
     template: `%s | ${SITE_NAME}`,
   },
   description:
-    "Premium down jackets and puffer coats. 90/10 European goose down, water-repellent shells, honest prices.",
+    "Discover MYCOAT: Luxury down jackets engineered with 90/10 European goose down and 700+ fill power. Premium warmth, water-repellent shells, and honest prices from $115. Shop now.",
   keywords: ["down jacket", "puffer coat", "luxury down", "winter coat", "goose down jacket", "alpine style"],
   openGraph: {
     type: "website",
     locale: "en_US",
     url: SITE_URL,
     siteName: SITE_NAME,
-    title: `${SITE_NAME} | Luxury Down Jackets`,
-    description: "Premium down jackets and puffer coats at honest prices.",
+    title: `${SITE_NAME} | Premium 700+ Fill Power Luxury Down Jackets & Puffers`,
+    description: "Luxury down jackets with 90/10 European goose down and 700+ fill power. Honest prices from $115.",
   },
   twitter: {
     card: "summary_large_image",
-    title: `${SITE_NAME} | Luxury Down Jackets`,
-    description: "Premium down jackets and puffer coats at honest prices.",
+    title: `${SITE_NAME} | Premium 700+ Fill Power Luxury Down Jackets & Puffers`,
+    description: "Luxury down jackets with 90/10 European goose down and 700+ fill power. Honest prices from $115.",
   },
 };
 

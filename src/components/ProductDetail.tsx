@@ -111,7 +111,7 @@ export default function ProductDetail({ product }: { product: Product }) {
                 <div ref={thumbRef} className="flex gap-2 overflow-x-auto pb-2 [scrollbar-width:thin] scroll-smooth px-7">
                   {product.images.map((img, i) => (
                     <button key={i} data-idx={i} onClick={() => setImgIndex(i)} className={`w-16 h-20 flex-shrink-0 ${i === imgIndex ? "ring-1 ring-charcoal ring-offset-2" : "opacity-50 hover:opacity-80"}`}>
-                      <img src={optimizeImage(img)} alt="" className="w-full h-full object-cover" />
+                      <img src={optimizeImage(img)} alt={product.name} className="w-full h-full object-cover" />
                     </button>
                   ))}
                 </div>

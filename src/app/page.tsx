@@ -9,9 +9,9 @@ export const fetchCache = "force-no-store";
 export const revalidate = 0;
 
 export const metadata: Metadata = {
-  title: { absolute: `${SITE_NAME} | Luxury Down Jackets` },
+  title: { absolute: `${SITE_NAME} | Premium 700+ Fill Power Luxury Down Jackets & Puffers` },
   description:
-    "Premium down jackets and puffer coats. 90/10 European goose down, water-repellent shells, honest prices.",
+    "Discover MYCOAT: Luxury down jackets engineered with 90/10 European goose down and 700+ fill power. Premium warmth, water-repellent shells, and honest prices from $115. Shop now.",
   alternates: { canonical: SITE_URL },
 };
 
