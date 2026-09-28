@@ -5,6 +5,9 @@ import { DATA_MODE, SITE_URL } from "@/lib/config";
 
 const BASE = SITE_URL;
 
+// 动态生成：每次请求实时查询，确保新建的博客/商品立即进入 sitemap
+export const dynamic = "force-dynamic";
+
 const staticPaths = [
   "/shop",
   "/craft",
