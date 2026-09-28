@@ -142,7 +142,7 @@ export default function ProductDetail({ product }: { product: Product }) {
             <p className="section-label capitalize">{product.category === "men" ? "Men" : product.category === "unisex" ? "Unisex" : "Women"}</p>
             <h1 className="font-serif text-2xl md:text-3xl mt-3 mb-4">{product.name}</h1>
             <p className="text-xl font-light mb-6">${product.price.toLocaleString()}</p>
-            <p className="body-text mb-8">{product.description}</p>
+            <div className="body-text mb-8 whitespace-pre-line leading-relaxed">{product.description}</div>
 
             {product.colors.length > 0 && (
               <div className="mb-8">
