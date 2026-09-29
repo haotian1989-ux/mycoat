@@ -1,9 +1,11 @@
 import Link from "next/link";
+import { headers } from "next/headers";
 import { supabase } from "@/lib/supabase";
 import { SITE_NAME } from "@/lib/config";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export const metadata: Metadata = {
   title: `Journal | ${SITE_NAME}`,
@@ -12,6 +14,7 @@ export const metadata: Metadata = {
 };
 
 export default async function BlogPage() {
+  headers(); // 强制每次请求动态渲染，避免列表被静态快照
   const { data } = await supabase
     .from("blog_posts")
     .select("id, slug, title, meta_description, excerpt, content, created_at")
