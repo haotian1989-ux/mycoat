@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { headers } from "next/headers";
 import { getServerSupabase } from "@/lib/supabase-server";
 import { products as defaultProducts } from "@/lib/data";
 import { DATA_MODE, SITE_URL } from "@/lib/config";
@@ -7,6 +8,7 @@ const BASE = SITE_URL;
 
 // 动态生成：每次请求实时查询，确保新建的博客/商品立即进入 sitemap
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 const staticPaths = [
   "/shop",
@@ -15,6 +17,7 @@ const staticPaths = [
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  headers(); // 强制每次请求动态生成，避免 sitemap 被静态快照
   let slugs: string[] = defaultProducts.map((p) => p.slug);
   let blogSlugs: string[] = [];
   if (DATA_MODE === "supabase") {
