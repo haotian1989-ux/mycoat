@@ -66,6 +66,27 @@ export default function ProductDetail({ product }: { product: Product }) {
     },
   };
 
+  const categoryLabel =
+    product.category === "men"
+      ? "Men's Outerwear"
+      : product.category === "women"
+      ? "Women's Outerwear"
+      : "Unisex Outerwear";
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: BASE },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: categoryLabel,
+        item: `${BASE}/shop?category=${product.category}`,
+      },
+      { "@type": "ListItem", position: 3, name: product.name, item: productUrl },
+    ],
+  };
+
   const nextImg = () => setImgIndex((i) => (i + 1) % product.images.length);
   const prevImg = () => setImgIndex((i) => (i - 1 + product.images.length) % product.images.length);
 
@@ -84,6 +105,10 @@ export default function ProductDetail({ product }: { product: Product }) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <div className="page-padding py-10 md:py-20">
         <nav className="text-[11px] text-smoke/60 tracking-label mb-10">
