@@ -202,14 +202,14 @@ export default function ProductDetail({ product }: { product: Product }) {
               </div>
             )}
 
-            <div className="space-y-3 mb-6">
+            <div className="flex flex-col gap-3 mb-6">
               <button onClick={handleAdd} disabled={!product.inStock}
-                className={`btn-primary w-full md:w-auto ${added ? "bg-green-800 hover:bg-green-800 border-0" : ""}`}>
+                className={`btn-primary w-full ${added ? "bg-green-800 hover:bg-green-800 border-0" : ""}`}>
                 {added ? (<><Check size={15} className="mr-2" /> Added to Bag</>) : product.inStock ? "Add to Bag" : "Out of Stock"}
               </button>
               {whatsappUrl && (
                 <a href={whatsappUrl} target="_blank" rel="noopener noreferrer"
-                  className="btn-primary w-full md:w-auto bg-[#25D366] border-[#25D366] hover:bg-[#1ea952] hover:border-[#1ea952] text-white inline-flex items-center justify-center gap-2">
+                  className="btn-primary w-full bg-[#25D366] border-[#25D366] hover:bg-[#1ea952] hover:border-[#1ea952] text-white inline-flex items-center justify-center gap-2">
                   <MessageCircle size={16} strokeWidth={2} /> Contact via WhatsApp
                 </a>
               )}
