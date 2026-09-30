@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useCart } from "./CartContext";
 import { Product } from "@/lib/types";
 import ImageLightbox from "./ImageLightbox";
+import PriceTag from "./PriceTag";
 
 export default function ProductCard({ product }: { product: Product }) {
   const { dispatch } = useCart();
@@ -47,10 +48,7 @@ export default function ProductCard({ product }: { product: Product }) {
           {product.name}
         </h3>
       </Link>
-      <p className="text-sm text-smoke tracking-wide">
-        <span className="text-[10px] text-muted mr-0.5">$</span>
-        {product.price.toLocaleString()}
-      </p>
+      <PriceTag price={product.price} size="card" />
     </div>
   );
 }
