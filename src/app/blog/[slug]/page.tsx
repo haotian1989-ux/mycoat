@@ -93,6 +93,16 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
             {dateStr ? <span> · {dateStr}</span> : null}
           </p>
           <h1 className="font-serif text-3xl md:text-4xl leading-tight mb-6">{post.title}</h1>
+          {post.cover_image ? (
+            <div className="mb-8 overflow-hidden">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={post.cover_image}
+                alt={post.title}
+                className="w-full max-h-[420px] object-cover"
+              />
+            </div>
+          ) : null}
         </header>
         <div>{renderBlocks(post.content || "")}</div>
         <footer className="mt-14 pt-8 border-t border-line">

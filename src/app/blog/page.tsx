@@ -17,7 +17,7 @@ export default async function BlogPage() {
   headers(); // 强制每次请求动态渲染，避免列表被静态快照
   const { data } = await supabase
     .from("blog_posts")
-    .select("id, slug, title, meta_description, excerpt, content, created_at")
+    .select("id, slug, title, meta_description, excerpt, cover_image, content, created_at")
     .eq("published", true)
     .order("created_at", { ascending: false });
 
@@ -53,10 +53,22 @@ export default async function BlogPage() {
       ) : (
         <div className="space-y-2">
           {posts.map((p) => (
-            <Link key={p.id} href={`/blog/${p.slug}`} className="block group border border-line/50 hover:border-line transition-colors p-6 md:p-8">
-              <p className="text-[10px] tracking-label uppercase text-smoke/40 mb-3">{dateOf(p.created_at)}</p>
-              <h2 className="font-serif text-xl md:text-2xl group-hover:underline underline-offset-4 mb-2">{p.title}</h2>
-              <p className="text-sm text-smoke leading-relaxed">{excerptOf(p)}</p>
+            <Link key={p.id} href={`/blog/${p.slug}`} className="block group border border-line/50 hover:border-line transition-colors">
+              {p.cover_image ? (
+                <div className="overflow-hidden">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={p.cover_image}
+                    alt={p.title}
+                    className="w-full h-48 md:h-56 object-cover group-hover:scale-[1.02] transition-transform duration-500"
+                  />
+                </div>
+              ) : null}
+              <div className="p-6 md:p-8">
+                <p className="text-[10px] tracking-label uppercase text-smoke/40 mb-3">{dateOf(p.created_at)}</p>
+                <h2 className="font-serif text-xl md:text-2xl group-hover:underline underline-offset-4 mb-2">{p.title}</h2>
+                <p className="text-sm text-smoke leading-relaxed">{excerptOf(p)}</p>
+              </div>
             </Link>
           ))}
         </div>
