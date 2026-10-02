@@ -5,6 +5,7 @@ import { SITE_NAME } from "@/lib/config";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
 
 // 轻量正文渲染：支持 ## 标题、- / • 列表、**加粗**、空行分段；
 // 对无标点结尾的短段落自动识别为小标题，保证可读性。
