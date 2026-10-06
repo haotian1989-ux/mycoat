@@ -19,6 +19,7 @@ const categories = [
 const notices = [
   "90/10 European goose down · 700+ fill power",
   "Pay with PayPal or USDT",
+  "Shipping cost is not included — contact us for a quote",
 ];
 
 export default function Navbar() {

@@ -31,7 +31,7 @@ const trustPoints = [
   { icon: Feather, label: "90/10 Goose Down" },
   { icon: Snowflake, label: "700+ Fill Power" },
   { icon: ShieldCheck, label: "Water-Repellent" },
-  { icon: Globe, label: "Worldwide Shipping" },
+  { icon: Globe, label: "Worldwide Delivery" },
 ];
 
 export default function HomeClient({
