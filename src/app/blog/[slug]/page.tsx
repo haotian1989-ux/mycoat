@@ -67,6 +67,15 @@ function renderBlocks(content: string) {
     else if (line.startsWith("# ")) { flushList(); blocks.push(<h2 key={key++} className="font-serif text-xl md:text-2xl mt-10 mb-4">{inline(line.slice(2))}</h2>); }
     else if (/^[-•*]\s+/.test(line)) { list.push(line.replace(/^[-•*]\s+/, "")); }
     else {
+      const imgMatch = line.match(/^!\[([^\]]*)\]\(([^)]+)\)$/);
+      if (imgMatch) {
+        flushList();
+        blocks.push(
+          // eslint-disable-next-line @next/next/no-img-element
+          <img key={key++} src={imgMatch[2]} alt={imgMatch[1]} className="my-8 w-full rounded-xl" />
+        );
+        continue;
+      }
       flushList();
       if (looksLikeHeading(line)) {
         blocks.push(<h2 key={key++} className="font-serif text-xl md:text-2xl mt-10 mb-4">{inline(line)}</h2>);
