@@ -25,7 +25,7 @@ const sortOptions = [
 ];
 
 function useProducts(): Product[] {
-  const [items, setItems] = useState<Product[]>(defaultProducts);
+  const [items, setItems] = useState<Product[]>([]);
   useEffect(() => {
     if (DATA_MODE === "local") {
       const stored = lsGet<Product[]>(LS.products);
